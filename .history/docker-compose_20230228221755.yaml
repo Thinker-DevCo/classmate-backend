@@ -17,11 +17,11 @@ services:
     image: postgres
     restart: always
     ports:
-      - 5434:5432
+      - 5432:5432
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: classmate
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=classmate
 
   pgadmin:
     container_name: pgadmin

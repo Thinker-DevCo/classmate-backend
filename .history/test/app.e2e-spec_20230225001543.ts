@@ -14,9 +14,11 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
   });
-  describe('First endpoint', () => {
-    it('/ (GET)', () => {
-      return request(app.getHttpServer()).get('/').expect(200);
-    });
+
+  it('/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
   });
 });
