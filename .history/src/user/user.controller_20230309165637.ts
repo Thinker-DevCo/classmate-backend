@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -33,13 +32,7 @@ export class UserController {
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Patch('/updateuser/:id')
-  updateUser(@Body() dto: UpdateUserDto, @Param('id') id: string) {
-    return this.userService.updateUser(id, dto);
-  }
-
-  @HttpCode(HttpStatus.ACCEPTED)
-  @Delete('/deleteuser/:id')
-  deleteUser(@Param('id') id: string) {
-    return this.userService.deleteUser(id);
+  updateUser(@Body() dto: UpdateUserDto, @Param('email') id: string) {
+    return this.userService.updateUserById(id, dto);
   }
 }

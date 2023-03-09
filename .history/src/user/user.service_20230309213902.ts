@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -65,21 +61,11 @@ export class UserService {
       return { message: ' user successfully updated' };
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('User could not be update');
+      throw new NotFoundException('User could not be update');
     }
   }
 
   async deleteUser(userId: string) {
-    try {
-      await this.prisma.user.delete({
-        where: {
-          id: userId,
-        },
-      });
-      return { message: 'successfully deleted' };
-    } catch (err) {
-      console.log(err);
-      throw new BadRequestException('User could not be deleted');
-    }
+    return { message: 'successfully deleted' };
   }
 }

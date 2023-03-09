@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -12,7 +8,7 @@ import { UserDto } from './dto/user.dto';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  //returns and array of object users
+  //returns and array of object user
   async getAllUsers() {
     const users = this.prisma.user.findMany();
 
@@ -25,8 +21,7 @@ export class UserService {
     return users;
   }
 
-  //finds a user using the unique field id then returns it
-  async getUserById(userId: string) {
+  async getUserById(userId: string): Promise<UserDto> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -38,7 +33,6 @@ export class UserService {
     return user;
   }
 
-  //finds the user using email then returns it
   async getUserByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -51,8 +45,7 @@ export class UserService {
     return user;
   }
 
-  //updates a specific user  and returns a success message
-  async updateUser(userId: string, dto: UpdateUserDto) {
+  async updateUserById(userId: string, dto: UpdateUserDto) {
     try {
       await this.prisma.user.update({
         where: {
@@ -65,21 +58,7 @@ export class UserService {
       return { message: ' user successfully updated' };
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('User could not be update');
-    }
-  }
-
-  async deleteUser(userId: string) {
-    try {
-      await this.prisma.user.delete({
-        where: {
-          id: userId,
-        },
-      });
-      return { message: 'successfully deleted' };
-    } catch (err) {
-      console.log(err);
-      throw new BadRequestException('User could not be deleted');
+      throw new NotFoundException('User could not be update');
     }
   }
 }
