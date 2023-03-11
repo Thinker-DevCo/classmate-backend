@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { SignInDto, SignUpDto } from './dto';
@@ -87,7 +87,7 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('user was not found');
-    console.log(' this is rt', rt);
+
     const rtMatches = await this.compareHash(rt, user.hashedRt);
     if (!rtMatches) throw new ForbiddenException('Access denied');
 

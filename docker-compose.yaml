@@ -30,7 +30,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: classmateTest
+      POSTGRES_DB: classmate
 
   pgadmin:
     container_name: pgadmin
