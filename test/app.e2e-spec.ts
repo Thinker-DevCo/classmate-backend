@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
 import { SignInDto, SignUpDto } from '../src/auth/dto';
-import { UserDto } from '../src/user/dto/user.dto';
 import { UpdateUserDto } from '../src/user/dto/update-user.dto';
 import { PrismaService } from '../src/prisma/prisma.service';
 
@@ -136,6 +135,7 @@ describe('App e2e', () => {
           .stores('refresh_token', 'refresh_token');
       });
     });
+
     describe('logout', () => {
       it('should logout', () => {
         return pactum
@@ -162,6 +162,76 @@ describe('App e2e', () => {
     // });
   });
 
+  describe('User', () => {
+    describe('Get all', () => {
+      it('should get all users', () => {
+        return pactum
+          .spec()
+          .get('/user/getall')
+          .expectStatus(200)
+          .stores('userId', 'id')
+          .stores('userEmail', 'email');
+      });
+    });
+
+    describe('Get user by Id', () => {
+      it('should  get a user', () => {
+        return pactum
+          .spec()
+          .get('/user/getuser/{id}')
+          .withPathParams('id', '$S{userId}')
+          .expectStatus(200);
+      });
+
+      it('should  not get a user', () => {
+        return pactum.spec().get('/user/getuser/{id}').expectStatus(404);
+      });
+    });
+
+    describe('Get user by email', () => {
+      it('should  get a user', () => {
+        return pactum
+          .spec()
+          .get('/user/getuserbyemail/{email}')
+          .withPathParams('email', '$S{userEmail}')
+          .expectStatus(200);
+      });
+
+      it('should  not get a user', () => {
+        return pactum
+          .spec()
+          .get('/user/getuserbyemail/{email}')
+          .expectStatus(404);
+      });
+    });
+
+    describe('Update user', () => {
+      const dto: UpdateUserDto = {
+        email: 'newemail@gmail.com',
+      };
+
+      it('should update user', () => {
+        return pactum
+          .spec()
+          .withHeaders({ Authorization: 'Bearer $S{access_token}' })
+          .withBody(dto)
+          .patch('/user/updateuser/{id}')
+          .withPathParams('id', '$S{userId}')
+          .expectStatus(202);
+      });
+    });
+
+    describe('Delete user', () => {
+      it('should delete user', () => {
+        return pactum
+          .spec()
+          .withHeaders({ Authorization: 'Bearer $S{access_token}' })
+          .delete('/user/deleteuser/{id}')
+          .withPathParams('id', '$S{userId}')
+          .expectStatus(202);
+      });
+    });
+  });
 
   it.todo('should pass');
 });
