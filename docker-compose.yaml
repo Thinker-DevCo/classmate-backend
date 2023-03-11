@@ -1,7 +1,6 @@
 version: '3.8'
 services:
   nest:
-    container_name: nest-api
     build: .
     volumes:
       - .:/app
@@ -22,6 +21,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: classmate
+
+  test-db:
+    image: postgres
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: classmateTest
 
   pgadmin:
     container_name: pgadmin

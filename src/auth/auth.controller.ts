@@ -4,10 +4,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { GetCurrentUser, GetCurrentUserId } from 'src/common/decorators';
 import { AtGuard, RtGuard } from 'src/common/guards';
 import { Tokens } from './@types';
