@@ -1,16 +1,13 @@
 import {
   ForbiddenException,
-  HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { SignInDto, SignUpDto } from './dto';
 import { Tokens } from './@types';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -90,7 +87,7 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('user was not found');
-    console.log(' this is rt', rt);
+
     const rtMatches = await this.compareHash(rt, user.hashedRt);
     if (!rtMatches) throw new ForbiddenException('Access denied');
 
@@ -118,7 +115,7 @@ export class AuthService {
   }
 
   //compares two hashes and returns true if they are equal and false otherwise
-  compareHash(password: string, hash: string): Promise<Boolean> {
+  compareHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
 
