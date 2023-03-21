@@ -35,7 +35,7 @@ model PersonalInfo {
 
 
 
-enum Province {
+enum UserProvince {
   MAPUTO
   MAPUTO_CIDADE
   GAZA
@@ -49,7 +49,7 @@ enum Province {
   CABO_DELGADO
 }
 
-enum Gender{
+enum UserGender{
   MALE
   FEMALE
   NOT_SPECIFIED

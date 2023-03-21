@@ -24,29 +24,28 @@ model User {
 
 model PersonalInfo {
   id String @id @default(uuid())
-  user  User @relation(fields: [user_id], references: [id], onDelete: Cascade) 
+  user  User @relation(fields: [user_id], references: [id]) 
   user_id String @unique 
   first_name String 
   last_name String
-  gender Gender @default(NOT_SPECIFIED)
-  province Province @default(MAPUTO)
-  birth_date DateTime
+  gender Gender @default(Not_specified)
+  province 
 }
 
 
 
 enum Province {
-  MAPUTO
-  MAPUTO_CIDADE
-  GAZA
-  INHAMBANE
-  SOFALA
-  MANICA
-  TETE
-  NAMPULA
-  ZAMBEZIA
-  NIASSA
-  CABO_DELGADO
+    MAPUTO
+    MAPUTO_CIDADE
+    GAZA
+    INHAMBANE
+    SOFALA
+    MANICA
+    TETE
+    NAMPULA
+    ZAMBEZIA
+    NIASSA
+    CABO_DELGADO
 }
 
 enum Gender{

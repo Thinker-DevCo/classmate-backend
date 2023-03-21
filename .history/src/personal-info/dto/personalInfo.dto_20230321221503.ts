@@ -1,0 +1,27 @@
+import {
+  IsDate,
+  IsEnum,
+  IsNegative,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Gender } from '@prisma/client';
+import { Province } from '@prisma/client';
+export class PersonaLInfoDto {
+  @IsString()
+  first_name: string;
+
+  @IsString()
+  last_name: string;
+
+  @IsEnum(Gender)
+  @IsOptional()
+  gender?: Gender;
+
+  @IsEnum(Province)
+  @IsOptional()
+  province?: Province;
+
+  @IsDate()
+  birth_date: Date;
+}
