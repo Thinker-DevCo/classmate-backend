@@ -44,10 +44,10 @@ export class AuthService {
           throw new ForbiddenException('user already exists in the database');
         }
       }
-      console.log(error);
       //if the error is not from prisma will generate an exception with a default message
       throw new ForbiddenException(
-        'Could not sign the user up due to an error',
+        'Could not sign the user up due to an error: ',
+        error,
       );
     }
   }

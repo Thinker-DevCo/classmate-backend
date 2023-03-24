@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { SignInDto, SignUpDto } from './dto';
 import { Tokens } from './@types';
 import { Prisma } from '@prisma/client';
@@ -29,9 +29,6 @@ export class AuthService {
       });
       const tokens = await this.getTokens(user.id, user.email);
       await this.updateRtHash(user.id, tokens.refresh_token);
-
-      delete user.hash_password;
-      delete user.hashedRt;
       return {
         user: user,
         tokens: tokens,
@@ -44,16 +41,16 @@ export class AuthService {
           throw new ForbiddenException('user already exists in the database');
         }
       }
-      console.log(error);
       //if the error is not from prisma will generate an exception with a default message
       throw new ForbiddenException(
-        'Could not sign the user up due to an error',
+        'Could not sign the user up due to an error: ',
+        error,
       );
     }
   }
 
   //returns the user with an access token, and reloads the refresh token
-  async signIn(dto: SignInDto) {
+  async signIn(dto: SignInDto): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -67,12 +64,8 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email);
 
     await this.updateRtHash(user.id, tokens.refresh_token);
-    delete user.hash_password;
-    delete user.hashedRt;
-    return {
-      user: user,
-      tokens: tokens,
-    };
+
+    return tokens;
   }
 
   //deletes and invalidates the access token and refresh token, and stores the refresh token on the blacklist

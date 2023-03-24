@@ -33,7 +33,7 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@GetCurrentUserId() userid: string) {
-    return this.authService.logout(userid);
+    return this.authService.logout(userId);
   }
   @UseGuards(RtGuard)
   @Post('refresh')

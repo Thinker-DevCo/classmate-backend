@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { SignInDto, SignUpDto } from './dto';
 import { Tokens } from './@types';
 import { Prisma } from '@prisma/client';
@@ -29,9 +29,6 @@ export class AuthService {
       });
       const tokens = await this.getTokens(user.id, user.email);
       await this.updateRtHash(user.id, tokens.refresh_token);
-
-      delete user.hash_password;
-      delete user.hashedRt;
       return {
         user: user,
         tokens: tokens,
@@ -44,10 +41,10 @@ export class AuthService {
           throw new ForbiddenException('user already exists in the database');
         }
       }
-      console.log(error);
       //if the error is not from prisma will generate an exception with a default message
       throw new ForbiddenException(
-        'Could not sign the user up due to an error',
+        'Could not sign the user up due to an error: ',
+        error,
       );
     }
   }
@@ -67,8 +64,7 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email);
 
     await this.updateRtHash(user.id, tokens.refresh_token);
-    delete user.hash_password;
-    delete user.hashedRt;
+
     return {
       user: user,
       tokens: tokens,

@@ -1,13 +1,12 @@
 version: '3.8'
 services:
   app:
-    container_name: app
     build: .
     command: pnpm run start:dev
     volumes:
       - .:/app
     environment:
-      DATABASE_URL: postgresql://postgres:admin@db:5432/classmate?schema=public
+      DATABASE_URL: postgresql://postgres:admin@db:5434/classmate?schema=public
     ports:
       - '8000:8000'
     depends_on:
@@ -39,6 +38,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: classmate
+    networks:
+      - my-network
 
   pgadmin:
     container_name: pgadmin
@@ -50,6 +51,3 @@ services:
       - 5050:80
     depends_on:
       - db
-
-networks:
-  my-network:

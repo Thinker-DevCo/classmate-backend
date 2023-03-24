@@ -25,15 +25,15 @@ export class AuthController {
 
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  signin(@Body() dto: SignInDto) {
+  signin(@Body() dto: SignInDto): Promise<Tokens> {
     return this.authService.signIn(dto);
   }
 
   @UseGuards(AtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@GetCurrentUserId() userid: string) {
-    return this.authService.logout(userid);
+  logout(@GetCurrentUserId() userId: string) {
+    return this.authService.logout(userId);
   }
   @UseGuards(RtGuard)
   @Post('refresh')

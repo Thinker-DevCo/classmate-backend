@@ -1,24 +1,18 @@
 version: '3.8'
 services:
   app:
-    container_name: app
     build: .
     command: pnpm run start:dev
     volumes:
       - .:/app
-    environment:
-      DATABASE_URL: postgresql://postgres:admin@db:5432/classmate?schema=public
+      - .:/app/node_modules
     ports:
       - '8000:8000'
     depends_on:
       - db
     restart: always
 
-    networks:
-      - my-network
-
   db:
-    container_name: db
     image: postgres
     restart: always
     ports:
@@ -27,8 +21,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: classmate
-    networks:
-      - my-network
 
   test-db:
     image: postgres
@@ -52,4 +44,5 @@ services:
       - db
 
 networks:
-  my-network:
+  postgres:
+    driver: bridge
