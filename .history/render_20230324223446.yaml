@@ -13,4 +13,4 @@ services:
           property: connectionString
 
 databases:
-  - name: classmate
+  - name: classmate-db1
