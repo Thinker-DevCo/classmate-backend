@@ -1,0 +1,19 @@
+services:
+  - type: web
+    env: node
+    name: classmate-api-prod1
+    repo: https://github.com/Thinker-DevCo/classmate-backend.git
+    region: frankfurt
+    buildCommand: npm install pnpm && pnpm install --no-frozen-lockfile && pnpm build
+    startCommand: pnpm start:prod
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: classmate
+          property: connectionString
+
+databases:
+  - name: classmate
+    databaseName: classmate
+    user: postgres
+    region: frankfurt
