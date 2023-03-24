@@ -15,4 +15,5 @@ services:
 databases:
   - name: classmate
     databaseName: classmate
+    user: master
     region: frankfurt
