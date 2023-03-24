@@ -1,5 +1,5 @@
 services:
-- type: web
+  -type: web
    env: node
    name: classmate-api-prod1
    repo: https://github.com/Thinker-DevCo/classmate-backend.git
