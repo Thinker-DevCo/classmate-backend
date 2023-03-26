@@ -47,7 +47,5 @@ export class UserController {
 
   @UseGuards(AtGuard)
   @Get('/getcurrentUser')
-  getCurrentUser(@GetCurrentUserId() userID: string) {
-    return this.userService.getUserById(userID);
-  }
+  getCurrentUser(@GetCurrentUserId() userID: string) {}
 }
