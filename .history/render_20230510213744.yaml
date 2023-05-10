@@ -20,6 +20,7 @@ services:
   - type: redis
     name: classmate-redis
     ipAllowList: []
+    plan: free # optional (defaults to starter instance type)
     region: frankfurt
 
 databases:
