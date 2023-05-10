@@ -4,13 +4,20 @@ services:
     name: classmate-api-prod1
     repo: https://github.com/Thinker-DevCo/classmate-backend.git
     region: frankfurt
-    buildCommand: npm install pnpm && pnpm install && pnpm build
+    buildCommand: npm install pnpm && pnpm install --no-frozen-lockfile && pnpm build
     startCommand: pnpm start:prod
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: classmate
           property: connectionString
-
+   - type: redis
+     name: classmate-redis
+     ipAllowList: []
+     plan: free # optional (defaults to starter instance type)
+     maxmemoryPolicy: noeviction
+     
 databases:
   - name: classmate
+    databaseName: classmate
+    region: frankfurt

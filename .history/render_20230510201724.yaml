@@ -16,7 +16,6 @@ services:
      ipAllowList: []
      plan: free # optional (defaults to starter instance type)
      maxmemoryPolicy: noeviction
-     
 databases:
   - name: classmate
     databaseName: classmate
