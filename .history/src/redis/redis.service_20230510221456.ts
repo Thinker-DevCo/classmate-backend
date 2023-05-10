@@ -3,8 +3,9 @@ import { Redis } from 'ioredis';
 
 @Injectable()
 export class RedisService extends Redis {
+  private readonly redisClient: Redis;
   constructor() {
-    super(process.env.REDIS_URL);
+    super();
 
     super.on('error', (err) => {
       console.log('Error on redis');

@@ -8,7 +8,6 @@ services:
       - .:/app
     environment:
       DATABASE_URL: postgresql://postgres:admin@db:5432/classmate?schema=public
-      REDIS_URL: redis://redis:6379
     ports:
       - '8000:8000'
     depends_on:
@@ -52,7 +51,7 @@ services:
     depends_on:
       - db
   redis:
-    container_name: redis
+    container_name: cache
     image: redis
     ports:
       - 6379:6379
