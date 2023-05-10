@@ -41,7 +41,7 @@ export class UserService {
       });
       if (!user) throw new NotFoundException('User was not found');
       delete (await user).hash_password;
-      delete user.hashedRt;
+
       await this.redis.set('user', JSON.stringify(user), 'EX', 15);
       console.log('from db');
       return user;

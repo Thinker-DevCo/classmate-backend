@@ -14,15 +14,19 @@ import { PersonalInfoModule } from './personal-info/personal-info.module';
 import * as cookieParser from 'cookie-parser';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
-import { RedisModule } from './redis/redis.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    CacheModule.register({
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+      // Other cache configuration options
+    }),
     UserModule,
     PrismaModule,
     AuthModule,
     PersonalInfoModule,
-    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

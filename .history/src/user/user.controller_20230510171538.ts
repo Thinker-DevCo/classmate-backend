@@ -1,13 +1,11 @@
 import {
   Body,
-  CACHE_MANAGER,
   CacheInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
-  Inject,
   Param,
   Patch,
   UseGuards,
@@ -17,7 +15,6 @@ import { GetCurrentUserId } from 'src/common/decorators';
 import { AtGuard } from 'src/common/guards';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import { Cache } from 'cache-manager';
 
 @Controller('user')
 export class UserController {
@@ -28,8 +25,9 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Get('/getuser/:id')
-  async getUserById(@Param('id') id: string) {
+  getUserById(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }
 

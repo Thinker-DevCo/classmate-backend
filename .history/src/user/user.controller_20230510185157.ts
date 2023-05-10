@@ -21,13 +21,17 @@ import { Cache } from 'cache-manager';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private userService: UserService,
+  ) {}
 
   @Get('/getall')
   getAllUsers() {
     return this.userService.getAllUsers();
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Get('/getuser/:id')
   async getUserById(@Param('id') id: string) {
     return this.userService.getUserById(id);

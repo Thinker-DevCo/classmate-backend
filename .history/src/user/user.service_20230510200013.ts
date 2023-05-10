@@ -32,7 +32,6 @@ export class UserService {
   //finds a user using the unique field id then returns it
   async getUserById(userId: string) {
     const cachedUser = await this.redis.get('user');
-    console.log('worked');
     if (!cachedUser) {
       const user = await this.prisma.user.findUnique({
         where: {
