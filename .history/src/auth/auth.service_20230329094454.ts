@@ -2,7 +2,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  Res,
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';

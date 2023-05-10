@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   //returns the user with an access token, and reloads the refresh token
-  async signIn(dto: SignInDto) {
+  async signIn(dto: SignInDto, @Res() res: ) {
 
     const user = await this.prisma.user.findUnique({
       where: {

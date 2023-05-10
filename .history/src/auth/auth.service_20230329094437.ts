@@ -2,7 +2,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  Res,
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
@@ -55,7 +54,6 @@ export class AuthService {
 
   //returns the user with an access token, and reloads the refresh token
   async signIn(dto: SignInDto) {
-
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -94,7 +92,7 @@ export class AuthService {
 
   //refreshes the access token and refresh token
   async refreshTokens(userId: string, rt: string) {
-    
+    res.cookie('cookieName', 'cookieValue', { httpOnly: true });
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
