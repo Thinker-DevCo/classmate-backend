@@ -10,32 +10,20 @@ import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class PersonalInfoService {
-  constructor(private prisma: PrismaService, private redis: RedisService) {}
-  async getUserPersonalInfo(id: string) {
-    const cachedInfo = await this.redis.get('PersonalInfo');
+  constructor(private prisma: PrismaService;
+    private readonly redis: RedisService) {}  async getUserPersonalInfo(id: string) {
+    const personalInfo = this.prisma.personalInfo.findUnique({
+      where: {
+        user_id: id,
+      },
+    });
 
-    if (!cachedInfo) {
-      const personalInfo = await this.prisma.personalInfo.findUnique({
-        where: {
-          user_id: id,
-        },
-      });
-
-      if (!personalInfo)
-        throw new NotFoundException(
-          'User does not have his personal information stored',
-        );
-
-      await this.redis.set(
-        'PersonalInfo',
-        JSON.stringify(personalInfo),
-        'EX',
-        15,
+    if (!personalInfo)
+      throw new NotFoundException(
+        'User does not have his personal information stored',
       );
-      return personalInfo;
-    }
 
-    return JSON.parse(cachedInfo);
+    return personalInfo;
   }
 
   async storePersonalInfo(dto: PersonaLInfoDto, userId: string) {

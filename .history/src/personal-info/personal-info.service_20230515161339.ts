@@ -13,9 +13,8 @@ export class PersonalInfoService {
   constructor(private prisma: PrismaService, private redis: RedisService) {}
   async getUserPersonalInfo(id: string) {
     const cachedInfo = await this.redis.get('PersonalInfo');
-
     if (!cachedInfo) {
-      const personalInfo = await this.prisma.personalInfo.findUnique({
+      const personalInfo = this.prisma.personalInfo.findUnique({
         where: {
           user_id: id,
         },

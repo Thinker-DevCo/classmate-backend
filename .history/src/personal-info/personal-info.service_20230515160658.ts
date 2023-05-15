@@ -4,27 +4,38 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PersonaLInfoDto, UpdatePersonaLInfoDto } from './dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class PersonalInfoService {
-  constructor(private prisma: PrismaService) {}
-
+  constructor(private prisma: PrismaService, private redis: RedisService) {}
   async getUserPersonalInfo(id: string) {
-    const personalInfo = this.prisma.personalInfo.findUnique({
-      where: {
-        user_id: id,
-      },
-    });
+    const cachedInfo = await this.redis.get('userPersonalInfo');
+    if (!cachedInfo) {
+      const personalInfo = this.prisma.personalInfo.findUnique({
+        where: {
+          user_id: id,
+        },
+      });
 
-    if (!personalInfo)
-      throw new NotFoundException(
-        'User does not have his personal information stored',
+      if (!personalInfo)
+        throw new NotFoundException(
+          'User does not have his personal information stored',
+        );
+
+      await this.redis.set(
+        'userPersonalInfo',
+        JSON.stringify(personalInfo),
+        'EX',
+        15,
       );
-
-    return personalInfo;
+      return personalInfo;
+    }
+    const personalIn = JSON.parse(cachedInfo);
+    console.log(personalIn);
+    return personalIn;
   }
 
   async storePersonalInfo(dto: PersonaLInfoDto, userId: string) {
@@ -32,7 +43,11 @@ export class PersonalInfoService {
       const personalInfo = await this.prisma.personalInfo.create({
         data: {
           user_id: userId,
-          ...dto,
+          first_name: dto.first_name,
+          last_name: dto.last_name,
+          birth_date: new Date(dto.birth_date),
+          gender: dto.gender,
+          province: dto.province,
         },
       });
 
@@ -45,6 +60,7 @@ export class PersonalInfoService {
           );
         }
       }
+      console.log(err);
       throw new ForbiddenException('Could not create personal information');
     }
   }
@@ -59,6 +75,9 @@ export class PersonalInfoService {
           ...dto,
         },
       });
+      return {
+        message: 'user info was updated successfully',
+      };
     } catch (err) {
       throw new ForbiddenException('Could not update personal information');
     }

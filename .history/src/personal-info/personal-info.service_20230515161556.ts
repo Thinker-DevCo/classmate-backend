@@ -4,27 +4,38 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PersonaLInfoDto, UpdatePersonaLInfoDto } from './dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class PersonalInfoService {
-  constructor(private prisma: PrismaService) {}
-
+  constructor(private prisma: PrismaService, private redis: RedisService) {}
   async getUserPersonalInfo(id: string) {
-    const personalInfo = this.prisma.personalInfo.findUnique({
-      where: {
-        user_id: id,
-      },
-    });
+    const cachedInfo = await this.redis.get('PersonalInfo');
 
-    if (!personalInfo)
-      throw new NotFoundException(
-        'User does not have his personal information stored',
+    if (!cachedInfo) {
+      const personalInfo = await this.prisma.personalInfo.findUnique({
+        where: {
+          user_id: id,
+        },
+      });
+
+      if (!personalInfo)
+        throw new NotFoundException(
+          'User does not have his personal information stored',
+        );
+
+      await this.redis.set(
+        'PersonalInfo',
+        JSON.stringify(personalInfo),
+        'EX',
+        15,
       );
+      return personalInfo;
+    }
 
-    return personalInfo;
+    return JSON.parse(cachedInfo);
   }
 
   async storePersonalInfo(dto: PersonaLInfoDto, userId: string) {

@@ -4,14 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PersonaLInfoDto, UpdatePersonaLInfoDto } from './dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class PersonalInfoService {
-  constructor(private prisma: PrismaService) {}
-
+  constructor(private prisma: PrismaService;
+    private readonly redis: RedisService) {}
   async getUserPersonalInfo(id: string) {
     const personalInfo = this.prisma.personalInfo.findUnique({
       where: {
@@ -32,7 +32,11 @@ export class PersonalInfoService {
       const personalInfo = await this.prisma.personalInfo.create({
         data: {
           user_id: userId,
-          ...dto,
+          first_name: dto.first_name,
+          last_name: dto.last_name,
+          birth_date: new Date(dto.birth_date),
+          gender: dto.gender,
+          province: dto.province,
         },
       });
 
@@ -60,6 +64,9 @@ export class PersonalInfoService {
           ...dto,
         },
       });
+      return {
+        message: 'user info was updated successfully',
+      };
     } catch (err) {
       throw new ForbiddenException('Could not update personal information');
     }
