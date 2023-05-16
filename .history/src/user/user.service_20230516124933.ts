@@ -29,7 +29,6 @@ export class UserService {
       delete user.hash_password;
       delete user.hashedRt;
     });
-    await this.redis.set('users', JSON.stringify(users), 'EX', 15);
     return users;
   }
 
@@ -51,8 +50,6 @@ export class UserService {
 
   //finds the user using email then returns it
   async getUserByEmail(email: string) {
-    const cachedUser = await this.redis.get('user');
-    if (cachedUser) return JSON.parse(cachedUser);
     const user = await this.prisma.user.findUnique({
       where: {
         email: email,
@@ -61,7 +58,6 @@ export class UserService {
     if (!user) throw new NotFoundException('User was not found');
     delete (await user).hash_password;
     delete user.hashedRt;
-    await this.redis.set('user', JSON.stringify(user), 'EX', 15);
     return user;
   }
 

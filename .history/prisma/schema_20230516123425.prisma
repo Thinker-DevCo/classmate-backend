@@ -38,7 +38,7 @@ model PersonalInfo {
 model school{
   id String @id @default(uuid())
   full_name String @unique
-  acronime String? @unique
+  acronime String @unique
   location Json?
   address String?
 }

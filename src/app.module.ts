@@ -15,6 +15,7 @@ import * as cookieParser from 'cookie-parser';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { RedisModule } from './redis/redis.module';
+import { SchoolModule } from './school/school.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -23,6 +24,7 @@ import { RedisModule } from './redis/redis.module';
     AuthModule,
     PersonalInfoModule,
     RedisModule,
+    SchoolModule,
   ],
   controllers: [AppController],
   providers: [AppService],

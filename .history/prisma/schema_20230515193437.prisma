@@ -10,7 +10,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id String @id @default(uuid())
   username String
@@ -37,10 +36,9 @@ model PersonalInfo {
 
 model school{
   id String @id @default(uuid())
-  full_name String @unique
-  acronime String? @unique
-  location Json?
-  address String?
+  name String @unique
+  location Json
+  address String
 }
 
 
@@ -64,4 +62,3 @@ enum Gender{
   FEMALE
   NOT_SPECIFIED
 }
-
