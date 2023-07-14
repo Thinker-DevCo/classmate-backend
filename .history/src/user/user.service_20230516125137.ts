@@ -29,7 +29,6 @@ export class UserService {
       delete user.hash_password;
       delete user.hashedRt;
     });
-    await this.redis.set('users', JSON.stringify(users), 'EX', 15);
     return users;
   }
 
