@@ -17,13 +17,13 @@ export class SignUpDto {
 
   @IsString()
   @IsNotEmpty()
-  password?: string;
+  password: string;
 
   @IsString()
   @IsOptional()
   profile_image?: string;
 
   @IsBoolean()
-  @IsOptional()
-  isOAuth?: boolean;
+  @IsNotEmpty()
+  isOAuth: boolean;
 }

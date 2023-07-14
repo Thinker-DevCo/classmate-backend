@@ -18,13 +18,14 @@ export class AuthService {
 
   //returns the user, an access token and a refresh token
   async signUp(dto: SignUpDto) {
+    let hash;
+    if (!dto.isOAuth) {
+      hash = await this.hashData(dto.password);
+    } else {
+      hash = await this.hashData(this.generateRandomPassword());
+    }
+
     try {
-      let hash;
-      if (!dto.isOAuth) {
-        hash = await this.hashData(dto.password);
-      } else {
-        hash = await this.hashData(this.generateRandomPassword());
-      }
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
