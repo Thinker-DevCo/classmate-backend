@@ -12,7 +12,6 @@ import { Tokens } from './@types';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { randomBytes } from 'crypto';
-import { OauthDto } from './dto/oauth.dto';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -20,14 +19,19 @@ export class AuthService {
   //returns the user, an access token and a refresh token
   async signUp(dto: SignUpDto) {
     try {
-      let hash = await this.hashData(dto.password);
-
+      let hash;
+      if (!dto.isOAuth) {
+        hash = await this.hashData(dto.password);
+      } else {
+        hash = await this.hashData(this.generateRandomPassword());
+      }
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
           username: dto.username,
           hash_password: hash,
           profile_image: dto.profile_image,
+          isOAuth: dto.isOAuth,
         },
       });
       const tokens = await this.getTokens(user.id, user.email);
@@ -55,45 +59,6 @@ export class AuthService {
     }
   }
 
-  async SignWithOauth(dto: OauthDto) {
-    try {
-      const user = await this.prisma.oAuthUser.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
-
-      if (!user) {
-        const new_user = await this.prisma.oAuthUser.create({
-          data: {
-            username: dto.username,
-            provider: dto.provider,
-            providerUserId: dto.providerUserId,
-            email: dto.email,
-            profile_image: dto.profile_image,
-          },
-        });
-        const tokens = await this.getTokens(new_user.id, new_user.email);
-        await this.updateRtOAuthHash(new_user.id, tokens.refresh_token);
-        delete new_user.hashedRt;
-        return {
-          user: new_user,
-          tokens: tokens,
-        };
-      } else {
-        const tokens = await this.getTokens(user.id, user.email);
-        await this.updateRtOAuthHash(user.id, tokens.refresh_token);
-        delete user.hashedRt;
-        return {
-          user: user,
-          tokens: tokens,
-        };
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   //returns the user with an access token, and reloads the refresh token
   async signIn(dto: SignInDto) {
     const user = await this.prisma.user.findUnique({
@@ -103,6 +68,7 @@ export class AuthService {
     });
     if (!user)
       throw new NotFoundException('user was not found  in the database ');
+
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
@@ -160,32 +126,6 @@ export class AuthService {
         hashedRt: hash,
       },
     });
-  }
-  async updateRtOAuthHash(userId: string, rt: string) {
-    const hash = await this.hashData(rt);
-    await this.prisma.oAuthUser.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hashedRt: hash,
-      },
-    });
-  }
-  async refreshOAuthTokens(userId: string, rt: string) {
-    const user = await this.prisma.oAuthUser.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new NotFoundException('user was not found');
-
-    const rtMatches = await this.compareHash(rt, user.hashedRt);
-    if (!rtMatches) throw new ForbiddenException('Access denied');
-
-    const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
-    return tokens;
   }
 
   //hashes the inputed strings and returns it

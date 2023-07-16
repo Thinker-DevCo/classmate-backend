@@ -16,6 +16,7 @@ model User {
   username String
   email String @unique
   hash_password String
+  isOAuth Boolean @default(false)
   profile_image String?
   verified_email Boolean @default(false)
   createdAt DateTime @default(now())
@@ -49,9 +50,7 @@ model OAuthUser {
   provider  String   // Provider name, e.g., 'google'
   providerUserId String // Unique user ID from the OAuth provider
   email     String   @unique
-  username String
   profile_image String?
-  hashedRt String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

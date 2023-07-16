@@ -62,7 +62,7 @@ export class AuthService {
           email: dto.email,
         },
       });
-
+      console.log(user);
       if (!user) {
         const new_user = await this.prisma.oAuthUser.create({
           data: {
@@ -74,16 +74,14 @@ export class AuthService {
           },
         });
         const tokens = await this.getTokens(new_user.id, new_user.email);
-        await this.updateRtOAuthHash(new_user.id, tokens.refresh_token);
-        delete new_user.hashedRt;
+        await this.updateRtHash(new_user.id, tokens.refresh_token);
         return {
           user: new_user,
           tokens: tokens,
         };
       } else {
         const tokens = await this.getTokens(user.id, user.email);
-        await this.updateRtOAuthHash(user.id, tokens.refresh_token);
-        delete user.hashedRt;
+        await this.updateRtHash(user.id, tokens.refresh_token);
         return {
           user: user,
           tokens: tokens,
@@ -160,32 +158,6 @@ export class AuthService {
         hashedRt: hash,
       },
     });
-  }
-  async updateRtOAuthHash(userId: string, rt: string) {
-    const hash = await this.hashData(rt);
-    await this.prisma.oAuthUser.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hashedRt: hash,
-      },
-    });
-  }
-  async refreshOAuthTokens(userId: string, rt: string) {
-    const user = await this.prisma.oAuthUser.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new NotFoundException('user was not found');
-
-    const rtMatches = await this.compareHash(rt, user.hashedRt);
-    if (!rtMatches) throw new ForbiddenException('Access denied');
-
-    const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
-    return tokens;
   }
 
   //hashes the inputed strings and returns it
