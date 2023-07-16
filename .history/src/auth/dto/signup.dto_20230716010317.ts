@@ -22,4 +22,8 @@ export class SignUpDto {
   @IsString()
   @IsOptional()
   profile_image?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isOAuth?: boolean;
 }

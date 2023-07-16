@@ -30,7 +30,6 @@ export class AuthController {
   }
 
   @Post('signwithoauth')
-  @HttpCode(HttpStatus.OK)
   signWithOAuth(@Body() dto: OauthDto) {
     return this.authService.SignWithOauth(dto);
   }

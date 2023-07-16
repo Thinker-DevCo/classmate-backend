@@ -6,10 +6,10 @@ import {
   IsString,
 } from 'class-validator';
 
-export class SignUpDto {
+export class OauthDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
+  provider: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -17,7 +17,7 @@ export class SignUpDto {
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  providerUserId: string;
 
   @IsString()
   @IsOptional()

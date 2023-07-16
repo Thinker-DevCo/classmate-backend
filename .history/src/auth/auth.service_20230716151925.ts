@@ -75,7 +75,6 @@ export class AuthService {
         });
         const tokens = await this.getTokens(new_user.id, new_user.email);
         await this.updateRtOAuthHash(new_user.id, tokens.refresh_token);
-        delete new_user.hashedRt;
         return {
           user: new_user,
           tokens: tokens,
@@ -83,7 +82,6 @@ export class AuthService {
       } else {
         const tokens = await this.getTokens(user.id, user.email);
         await this.updateRtOAuthHash(user.id, tokens.refresh_token);
-        delete user.hashedRt;
         return {
           user: user,
           tokens: tokens,
