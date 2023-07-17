@@ -111,15 +111,8 @@ export class AuthService {
         email: dto.email,
       },
     });
-    const oauthExists = await this.prisma.oAuthUser.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user && !oauthExists)
+    if (!user)
       throw new NotFoundException('user was not found  in the database ');
-    if (!user && oauthExists)
-      throw new ForbiddenException('Wrong credentials!');
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
@@ -237,5 +230,18 @@ export class AuthService {
       access_token: at,
       refresh_token: rt,
     };
+  }
+  generateRandomPassword(length: number = 16): string {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_';
+    const charLength = characters.length;
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charLength);
+      password += characters.charAt(randomIndex);
+    }
+
+    return password;
   }
 }

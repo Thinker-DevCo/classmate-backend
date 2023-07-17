@@ -111,15 +111,8 @@ export class AuthService {
         email: dto.email,
       },
     });
-    const oauthExists = await this.prisma.oAuthUser.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user && !oauthExists)
+    if (!user)
       throw new NotFoundException('user was not found  in the database ');
-    if (!user && oauthExists)
-      throw new ForbiddenException('Wrong credentials!');
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
