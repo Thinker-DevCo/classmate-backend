@@ -23,6 +23,7 @@ model User {
   hashedRt String?
   personalInfo PersonalInfo?
   oauthUser OAuthUser?
+  collegeStudentInfo CollegeStudentInfo?
 }
 
 model PersonalInfo {
@@ -35,13 +36,30 @@ model PersonalInfo {
   province Province @default(MAPUTO)
   birth_date DateTime
 }
+model CollegeStudentInfo {
+  id String @id @default(uuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String 
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
 
-model school{
+model Course{
+  id String @id @default(uuid())
+  name String @unique
+  duration Int 
+  schoolId String @unique
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  CollegeStudentInfo CollegeStudentInfo[]
+}
+
+model School{
   id String @id @default(uuid())
   full_name String @unique
   acronime String? @unique
   location Json?
   address String?
+  course Course[]
 }
 
 model OAuthUser {
