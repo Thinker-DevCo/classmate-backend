@@ -60,9 +60,6 @@ export class SchoolService {
       where: {
         id: id,
       },
-      include: {
-        course: true,
-      },
     });
 
     if (!school)
@@ -88,6 +85,9 @@ export class SchoolService {
             },
           },
         ],
+      },
+      include: {
+        course: true,
       },
     });
     return search_result;
