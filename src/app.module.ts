@@ -16,6 +16,8 @@ import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { RedisModule } from './redis/redis.module';
 import { SchoolModule } from './school/school.module';
+import { CourseService } from './course/course.service';
+import { CourseModule } from './course/course.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -25,9 +27,10 @@ import { SchoolModule } from './school/school.module';
     PersonalInfoModule,
     RedisModule,
     SchoolModule,
+    CourseModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CourseService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
