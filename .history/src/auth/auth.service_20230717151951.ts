@@ -72,11 +72,7 @@ export class AuthService {
           email: dto.email,
         },
       });
-      const jwtUser = await this.prisma.user.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
+
       if (!user) {
         const new_user = await this.prisma.oAuthUser.create({
           data: {
@@ -85,19 +81,8 @@ export class AuthService {
             providerUserId: dto.providerUserId,
             email: dto.email,
             profile_image: dto.profile_image,
-            userId: jwtUser ? jwtUser.id : null,
           },
         });
-        if (jwtUser) {
-          await this.prisma.user.update({
-            where: {
-              email: dto.email,
-            },
-            data: {
-              profile_image: dto.profile_image,
-            },
-          });
-        }
         const tokens = await this.getTokens(new_user.id, new_user.email);
         await this.updateRtOAuthHash(new_user.id, tokens.refresh_token);
         delete new_user.hashedRt;
