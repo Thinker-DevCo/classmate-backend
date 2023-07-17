@@ -88,16 +88,6 @@ export class AuthService {
             userId: jwtUser ? jwtUser.id : null,
           },
         });
-        if (jwtUser) {
-          await this.prisma.user.update({
-            where: {
-              email: dto.email,
-            },
-            data: {
-              profile_image: dto.profile_image,
-            },
-          });
-        }
         const tokens = await this.getTokens(new_user.id, new_user.email);
         await this.updateRtOAuthHash(new_user.id, tokens.refresh_token);
         delete new_user.hashedRt;
