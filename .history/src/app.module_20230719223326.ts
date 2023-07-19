@@ -18,7 +18,6 @@ import { RedisModule } from './redis/redis.module';
 import { SchoolModule } from './school/school.module';
 import { CourseService } from './course/course.service';
 import { CourseModule } from './course/course.module';
-import { CollegeStudentModule } from './college-student/college-student.module';
 
 @Module({
   imports: [
@@ -30,7 +29,6 @@ import { CollegeStudentModule } from './college-student/college-student.module';
     RedisModule,
     SchoolModule,
     CourseModule,
-    CollegeStudentModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService],
