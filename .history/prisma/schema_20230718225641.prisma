@@ -43,10 +43,8 @@ model CollegeStudentInfo {
   oauthUserId String? @unique
   oAuthUser OAuthUser? @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   current_year Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   @@unique([userId, oauthUserId])
 }
 

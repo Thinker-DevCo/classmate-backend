@@ -23,7 +23,7 @@ model User {
   hashedRt String?
   personalInfo PersonalInfo?
   oauthUser OAuthUser?
-  collegeStudent CollegeStudentInfo?
+  collegeStudentInfo CollegeStudentInfo?
 }
 
 model PersonalInfo {
@@ -38,16 +38,11 @@ model PersonalInfo {
 }
 model CollegeStudentInfo {
   id String @id @default(uuid())
-  userId String? @unique
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  oauthUserId String? @unique
-  oAuthUser OAuthUser? @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   current_year Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  @@unique([userId, oauthUserId])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Course{
@@ -78,10 +73,10 @@ model OAuthUser {
   hashedRt String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   // Relationship with User
   user      User?  @relation(fields: [userId], references: [id])
   userId    String? @unique
-  collegeStudent CollegeStudentInfo? 
 }
 
 

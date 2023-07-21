@@ -45,8 +45,6 @@ model CollegeStudentInfo {
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   current_year Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   @@unique([userId, oauthUserId])
 }
 
