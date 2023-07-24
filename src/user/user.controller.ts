@@ -1,7 +1,5 @@
 import {
   Body,
-  CACHE_MANAGER,
-  CacheInterceptor,
   Controller,
   Delete,
   Get,
