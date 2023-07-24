@@ -1,15 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { RedisClient } from './redis.providers';
+import {
+  REDIS_PUBLISHER_CLIENT,
+  REDIS_SUBSCRIBER_CLIENT,
+} from './redis.constants';
 
 @Injectable()
 export class RedisService {
   private readonly cacheClient: Redis;
-  private readonly pubClient: Redis;
-  private readonly subClient: Redis;
-  constructor() {
+
+  constructor(
+    @Inject(REDIS_SUBSCRIBER_CLIENT)
+    private readonly redisSubscriberClient: RedisClient,
+    @Inject(REDIS_PUBLISHER_CLIENT)
+    private readonly redisPublisherClient: RedisClient,
+  ) {
     this.cacheClient = new Redis(process.env.REDIS_URL);
-    this.pubClient = new Redis(process.env.REDIS_URL);
-    this.subClient = new Redis(process.env.REDIS_URL);
 
     this.cacheClient.on('error', (err) => {
       console.log('Error on Redis cache client');
@@ -17,12 +24,7 @@ export class RedisService {
       process.exit(1);
     });
 
-    this.pubClient.on('error', (err) => {
-      console.log('Error on Redis Pub/Sub client');
-      console.log(err);
-      process.exit(1);
-    });
-    this.subClient.on('error', (err) => {
+    this.pubSubClient.on('error', (err) => {
       console.log('Error on Redis Pub/Sub client');
       console.log(err);
       process.exit(1);
@@ -32,10 +34,7 @@ export class RedisService {
       console.log('Redis cache client connected');
     });
 
-    this.pubClient.on('connect', () => {
-      console.log('Redis Pub/Sub client connected');
-    });
-    this.subClient.on('connect', () => {
+    this.pubSubClient.on('connect', () => {
       console.log('Redis Pub/Sub client connected');
     });
   }
@@ -56,22 +55,16 @@ export class RedisService {
   // Redis Pub/Sub methods
 
   async subscribe(channel: string) {
-    return await this.subClient.subscribe(channel);
+    return await this.pubSubClient.subscribe(channel);
   }
 
   async publish(channel: string, message: string) {
-    return await this.pubClient.publish(channel, message);
+    return await this.pubSubClient.publish(channel, message);
   }
 
   async unsubscribe(channel: string) {
-    return await this.subClient.unsubscribe(channel);
+    return await this.pubSubClient.unsubscribe(channel);
   }
 
-  on(channel: string, callback: (channel: string, message: string) => void) {
-    this.subClient.on('message', (receivedChannel: string, message: string) => {
-      if (channel === receivedChannel) {
-        callback(receivedChannel, message);
-      }
-    });
-  }
+  // Other methods, if needed
 }

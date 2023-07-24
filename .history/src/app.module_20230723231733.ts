@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -14,6 +19,9 @@ import { SchoolModule } from './school/school.module';
 import { CourseService } from './course/course.service';
 import { CourseModule } from './course/course.module';
 import { CollegeStudentModule } from './college-student/college-student.module';
+import { GatewayGateway } from './gateway/gateway.gateway';
+
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -26,9 +34,11 @@ import { CollegeStudentModule } from './college-student/college-student.module';
     SchoolModule,
     CourseModule,
     CollegeStudentModule,
+
+    GatewayModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CourseService],
+  providers: [AppService, CourseService, GatewayGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

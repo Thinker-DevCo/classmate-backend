@@ -67,11 +67,5 @@ export class RedisService {
     return await this.subClient.unsubscribe(channel);
   }
 
-  on(channel: string, callback: (channel: string, message: string) => void) {
-    this.subClient.on('message', (receivedChannel: string, message: string) => {
-      if (channel === receivedChannel) {
-        callback(receivedChannel, message);
-      }
-    });
-  }
+  // Other methods, if needed
 }

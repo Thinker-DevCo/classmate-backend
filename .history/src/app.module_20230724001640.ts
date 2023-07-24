@@ -28,7 +28,7 @@ import { CollegeStudentModule } from './college-student/college-student.module';
     CollegeStudentModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CourseService],
+  providers: [AppService, CourseService, GatewayGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
