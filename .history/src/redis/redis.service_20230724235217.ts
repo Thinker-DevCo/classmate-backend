@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { SchoolGateway } from 'src/school/school.gateway';
 
 @Injectable()
 export class RedisService {
   private readonly cacheClient: Redis;
   private readonly pubClient: Redis;
   private readonly subClient: Redis;
-  private schoolGateway: SchoolGateway;
   constructor() {
     this.cacheClient = new Redis(process.env.REDIS_URL);
     this.pubClient = new Redis(process.env.REDIS_URL);
@@ -60,9 +58,7 @@ export class RedisService {
   }
 
   // Redis Pub/Sub methods
-  setSchoolGateway(schoolGateway: SchoolGateway) {
-    this.schoolGateway = schoolGateway;
-  }
+
   async subscribe(channel: string) {
     return await this.subClient.subscribe(channel);
   }
@@ -82,10 +78,8 @@ export class RedisService {
       }
     });
   }
-  private handleRedisMessage(channel: string, message: string) {
-    console.log(message);
-    const data = JSON.parse(message);
-    // You might need to change this instantiation based on your setup
-    this.schoolGateway.handleRedisMessage(data);
+  async handleRedisMessage(channel: string, message: string) {
+    console.log(`Received Redis message in channel '${channel}': ${message}`);
+    // Here, you can process the Redis message as needed
   }
 }

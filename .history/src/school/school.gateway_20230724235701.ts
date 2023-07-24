@@ -6,7 +6,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { channel } from 'diagnostics_channel';
 import { Socket, Server } from 'socket.io';
 import { RedisService } from 'src/redis/redis.service';
 
@@ -18,7 +17,6 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(private readonly redis: RedisService) {}
 
   afterInit(server: Server) {
-    this.redis.setSchoolGateway(this);
     this.redis
       .subscribe('schoolCreated')
       .then(() => {
@@ -28,6 +26,7 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
         console.error('Error subscribing to schoolCreated channel');
         console.error(err);
       });
+    // this.redis.on('message', this.handleRedisMessage.bind(this));
   }
 
   handleConnection(client: Socket) {
@@ -40,11 +39,13 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
     this.server.emit('newMessage', body);
   }
 
-  async handleRedisMessage(message: string) {
+  async handleRedisMessage(channel: string, message: string) {
+    console.log(`Received Redis message in channel '${channel}': ${message}`);
     console.log('this works');
+    const data = JSON.parse(message);
     this.server.emit('schoolCreated', {
       message: 'worked',
-      content: message,
+      content: data,
     });
   }
 }

@@ -7,7 +7,6 @@ export class RedisService {
   private readonly cacheClient: Redis;
   private readonly pubClient: Redis;
   private readonly subClient: Redis;
-  private schoolGateway: SchoolGateway;
   constructor() {
     this.cacheClient = new Redis(process.env.REDIS_URL);
     this.pubClient = new Redis(process.env.REDIS_URL);
@@ -60,9 +59,7 @@ export class RedisService {
   }
 
   // Redis Pub/Sub methods
-  setSchoolGateway(schoolGateway: SchoolGateway) {
-    this.schoolGateway = schoolGateway;
-  }
+
   async subscribe(channel: string) {
     return await this.subClient.subscribe(channel);
   }
@@ -83,9 +80,9 @@ export class RedisService {
     });
   }
   private handleRedisMessage(channel: string, message: string) {
-    console.log(message);
+    // Emit the message to the SchoolGateway (or any other logic you want to perform)
     const data = JSON.parse(message);
-    // You might need to change this instantiation based on your setup
-    this.schoolGateway.handleRedisMessage(data);
+    const schoolGateway = new SchoolGateway(); // You might need to change this instantiation based on your setup
+    schoolGateway.handleRedisMessage(data);
   }
 }

@@ -15,11 +15,11 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly redis: RedisService) {}
+  constructor() {}
 
   afterInit(server: Server) {
-    this.redis.setSchoolGateway(this);
-    this.redis
+    const redis = new RedisService(); //
+    redis
       .subscribe('schoolCreated')
       .then(() => {
         console.log('Subscribed to schoolCreated channel');
@@ -47,4 +47,5 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
       content: message,
     });
   }
+  private subscribeToSchoolCreated() {}
 }

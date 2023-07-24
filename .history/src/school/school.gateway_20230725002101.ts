@@ -18,7 +18,6 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(private readonly redis: RedisService) {}
 
   afterInit(server: Server) {
-    this.redis.setSchoolGateway(this);
     this.redis
       .subscribe('schoolCreated')
       .then(() => {
@@ -41,10 +40,12 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   async handleRedisMessage(message: string) {
+    console.log(`Received Redis message in channel '${channel}': ${message}`);
     console.log('this works');
+    const data = JSON.parse(message);
     this.server.emit('schoolCreated', {
       message: 'worked',
-      content: message,
+      content: data,
     });
   }
 }
