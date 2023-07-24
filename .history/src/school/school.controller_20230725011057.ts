@@ -39,7 +39,7 @@ export class SchoolController {
     return this.schoolService.updateSchool(id, dto);
   }
 
-  @Delete('/deleteschool/id=:id')
+  @Delete('/deleteschool/:id')
   deleteschool(@Param('id') id: string) {
     return this.schoolService.deleteSchool(id);
   }

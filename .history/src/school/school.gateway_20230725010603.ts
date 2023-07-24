@@ -19,9 +19,15 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
 
   afterInit(server: Server) {
     this.redis.setSchoolGateway(this);
-    this.redis.subscribe('schoolCreated');
-    this.redis.subscribe('schoolUpdated');
-    this.redis.subscribe('schoolDeleted');
+    this.redis
+      .subscribe('schoolCreated')
+      .then(() => {
+        console.log('Subscribed to schoolCreated channel');
+      })
+      .catch((err) => {
+        console.error('Error subscribing to schoolCreated channel');
+        console.error(err);
+      });
   }
 
   handleConnection(client: Socket) {
@@ -42,23 +48,20 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
           content: message,
         });
         break;
-      case 'schoolUpdated':
+      case 'schoolUpdate':
         this.server.emit('schoolUpdated', {
           message: 'schoolUpdated',
           content: message,
         });
         break;
-      case 'schoolDeleted':
+      case 'schoolDelete':
         this.server.emit('schoolDeleted', {
           message: 'schoolDeleted',
           content: message,
         });
         break;
       default:
-        this.server.emit('redisMessage', {
-          channel,
-          content: message,
-        });
+        null;
     }
   }
 }

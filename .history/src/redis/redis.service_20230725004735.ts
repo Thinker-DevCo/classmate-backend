@@ -85,6 +85,6 @@ export class RedisService {
   private handleRedisMessage(channel: string, message: string) {
     console.log(message);
     const data = JSON.parse(message);
-    this.schoolGateway.handleRedisMessage(channel, data);
+    this.schoolGateway.handleRedisMessage(data);
   }
 }

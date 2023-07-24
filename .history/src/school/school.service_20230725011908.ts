@@ -122,10 +122,7 @@ export class SchoolService {
           id: id,
         },
       });
-      const message = {
-        message: `school with id ${id} deleted successfully`,
-        id: id,
-      };
+      const message = { message: `school with id ${id} deleted successfully` };
       await this.redis
         .publish('schoolDeleted', JSON.stringify(message))
         .then(() => console.log('published'));

@@ -122,17 +122,14 @@ export class SchoolService {
           id: id,
         },
       });
-      const message = {
-        message: `school with id ${id} deleted successfully`,
-        id: id,
-      };
+      const message = { message: `school with id ${id} deleted successfully` };
       await this.redis
-        .publish('schoolDeleted', JSON.stringify(message))
+        .publish('schoolUpdated', JSON.stringify(message))
         .then(() => console.log('published'));
       return message;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('school could not be deleted');
+      throw new BadRequestException('user could not be deleted');
     }
   }
 }

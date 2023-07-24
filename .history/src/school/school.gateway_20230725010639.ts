@@ -42,23 +42,20 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
           content: message,
         });
         break;
-      case 'schoolUpdated':
+      case 'schoolUpdate':
         this.server.emit('schoolUpdated', {
           message: 'schoolUpdated',
           content: message,
         });
         break;
-      case 'schoolDeleted':
+      case 'schoolDelete':
         this.server.emit('schoolDeleted', {
           message: 'schoolDeleted',
           content: message,
         });
         break;
       default:
-        this.server.emit('redisMessage', {
-          channel,
-          content: message,
-        });
+        null;
     }
   }
 }
