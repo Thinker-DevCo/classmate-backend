@@ -24,9 +24,7 @@ export class SchoolService {
           ...dto,
         },
       });
-      await this.redis
-        .publish('schoolCreated', JSON.stringify(school))
-        .then(() => console.log('published'));
+      this.redis.publish('schoolCreated', JSON.stringify(school));
       return school;
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -40,8 +38,8 @@ export class SchoolService {
   }
 
   async getAllSchools() {
-    const cachedSchools = await this.redis.get('schools');
-    if (cachedSchools) return JSON.parse(cachedSchools);
+    // const cachedSchools = await this.redis.get('schools');
+    // if (cachedSchools) return JSON.parse(cachedSchools);
     const schools = await this.prisma.school.findMany({
       include: {
         course: true,
@@ -50,13 +48,13 @@ export class SchoolService {
 
     if (!schools)
       throw new NotFoundException('could not find any school information');
-    await this.redis.set('schools', JSON.stringify(schools), 'EX', 15);
+    // await this.redis.set('schools', JSON.stringify(schools), 'EX', 15);
     return schools;
   }
 
   async getSchoolById(id: string) {
-    const cachedSchool = await this.redis.get('school');
-    if (cachedSchool) return JSON.parse(cachedSchool);
+    // const cachedSchool = await this.redis.get('school');
+    // if (cachedSchool) return JSON.parse(cachedSchool);
 
     const school = await this.prisma.school.findUnique({
       where: {

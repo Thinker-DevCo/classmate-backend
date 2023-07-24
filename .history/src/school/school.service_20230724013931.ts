@@ -15,6 +15,7 @@ export class SchoolService {
   constructor(
     private prisma: PrismaService,
     private readonly redis: RedisService,
+    private readonly redisPublisher: RedisService,
   ) {}
 
   async storeSchool(dto: SchoolDto) {
@@ -24,9 +25,7 @@ export class SchoolService {
           ...dto,
         },
       });
-      await this.redis
-        .publish('schoolCreated', JSON.stringify(school))
-        .then(() => console.log('published'));
+      this.redisPublisher.publish('schoolCreated', JSON.stringify(school));
       return school;
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {

@@ -24,9 +24,7 @@ export class SchoolService {
           ...dto,
         },
       });
-      await this.redis
-        .publish('schoolCreated', JSON.stringify(school))
-        .then(() => console.log('published'));
+      this.redis.publish('schoolCreated', JSON.stringify(school));
       return school;
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
