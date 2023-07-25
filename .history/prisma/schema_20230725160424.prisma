@@ -76,13 +76,12 @@ model School{
 }
 model Course{
   id String @id @default(uuid())
-  name String 
+  name String @unique
   duration Int 
   schoolId String
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   subjects Subject[]
   CollegeStudentInfo CollegeStudentInfo[]
-  @@unique([id, schoolId])
 }
 
 model Subject{
@@ -92,7 +91,6 @@ model Subject{
   semester Int?
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  @@unique([id, courseId])
 }
 
 

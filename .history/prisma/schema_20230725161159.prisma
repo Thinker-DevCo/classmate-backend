@@ -92,7 +92,7 @@ model Subject{
   semester Int?
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  @@unique([id, courseId])
+
 }
 
 

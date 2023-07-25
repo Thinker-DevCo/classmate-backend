@@ -14,6 +14,8 @@ import { SchoolModule } from './school/school.module';
 import { CourseService } from './course/course.service';
 import { CourseModule } from './course/course.module';
 import { CollegeStudentModule } from './college-student/college-student.module';
+import { SubjectService } from './subject/subject.service';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
   imports: [
@@ -26,9 +28,10 @@ import { CollegeStudentModule } from './college-student/college-student.module';
     SchoolModule,
     CourseModule,
     CollegeStudentModule,
+    SubjectModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CourseService],
+  providers: [AppService, CourseService, SubjectService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -6,7 +6,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
+import { channel } from 'diagnostics_channel';
+import { Redis } from 'ioredis';
 import { Socket, Server } from 'socket.io';
 import { RedisService } from 'src/redis/redis.service';
 
