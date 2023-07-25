@@ -105,10 +105,7 @@ export class CourseService {
           id: id,
         },
       });
-
       const message = { message: 'course deleted successfully', id: id };
-      await this.redis.publish('courseUpdated', JSON.stringify(message));
-      return message;
     } catch (err) {
       console.log(err);
       throw new BadRequestException('course could not be deleted');

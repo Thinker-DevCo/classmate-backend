@@ -7,7 +7,7 @@ export class RedisService {
   private readonly cacheClient: Redis;
   private readonly pubClient: Redis;
   private readonly subClient: Redis;
-  // private schoolGateway: SchoolGateway;
+  private schoolGateway: SchoolGateway;
   private readonly subscribers: { [channel: string]: Server[] } = {};
   constructor() {
     this.cacheClient = new Redis(process.env.REDIS_URL);

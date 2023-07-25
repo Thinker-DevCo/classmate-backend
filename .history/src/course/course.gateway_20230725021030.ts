@@ -9,9 +9,8 @@ import {
 import { channel } from 'diagnostics_channel';
 import { Socket, Server } from 'socket.io';
 import { RedisService } from 'src/redis/redis.service';
-
 @WebSocketGateway()
-export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
+export class CourseGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
@@ -36,6 +35,7 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   async handleRedisMessage(channel: string, message: string) {
     switch (channel) {
       case 'schoolCreated':
+        console.log('this is called even tho it shouldnt just to annoy kelvin');
         this.server.emit('schoolCreated', {
           message: 'schoolCreated',
           content: message,

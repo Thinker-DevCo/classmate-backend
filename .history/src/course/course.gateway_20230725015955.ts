@@ -9,9 +9,8 @@ import {
 import { channel } from 'diagnostics_channel';
 import { Socket, Server } from 'socket.io';
 import { RedisService } from 'src/redis/redis.service';
-
 @WebSocketGateway()
-export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
+export class CourseGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 

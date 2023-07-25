@@ -7,7 +7,7 @@ export class RedisService {
   private readonly cacheClient: Redis;
   private readonly pubClient: Redis;
   private readonly subClient: Redis;
-  // private schoolGateway: SchoolGateway;
+  private schoolGateway: SchoolGateway;
   private readonly subscribers: { [channel: string]: Server[] } = {};
   constructor() {
     this.cacheClient = new Redis(process.env.REDIS_URL);
@@ -42,12 +42,8 @@ export class RedisService {
       console.log('Redis Pub/Sub client connected');
     });
 
-    this.subClient.on('message', (channel: string, message: string) => {
-      if (this.subscribers[channel]) {
-        for (const server of this.subscribers[channel]) {
-          server.emit(channel, message);
-        }
-      }
+    this.subClient.on('message', (channel, message) => {
+      this.handleRedisMessage(channel, message);
     });
   }
 
@@ -97,5 +93,10 @@ export class RedisService {
         callback(receivedChannel, message);
       }
     });
+  }
+  private handleRedisMessage(channel: string, message: string) {
+    console.log(message);
+    const data = JSON.parse(message);
+    this.schoolGateway.handleRedisMessage(channel, data);
   }
 }

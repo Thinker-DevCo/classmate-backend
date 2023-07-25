@@ -18,6 +18,7 @@ export class SchoolGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(private readonly redis: RedisService) {}
 
   afterInit(server: Server) {
+    this.redis.setSchoolGateway(this);
     this.redis.subscribe('schoolCreated', server);
     this.redis.subscribe('schoolUpdated', server);
     this.redis.subscribe('schoolDeleted', server);

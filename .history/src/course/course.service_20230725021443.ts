@@ -23,8 +23,9 @@ export class CourseService {
           ...dto,
         },
       });
-      await this.redis.publish('courseCreated', JSON.stringify(course));
-
+      await this.redis
+        .publish('courseCreated', JSON.stringify(course))
+        .then(() => console.log('published'));
       return course;
     } catch (err) {
       if (err.code instanceof Prisma.PrismaClientKnownRequestError) {
@@ -90,8 +91,6 @@ export class CourseService {
           ...dto,
         },
       });
-      await this.redis.publish('courseUpdated', JSON.stringify(course));
-
       return course;
     } catch (err) {
       console.log(err);
@@ -105,10 +104,7 @@ export class CourseService {
           id: id,
         },
       });
-
-      const message = { message: 'course deleted successfully', id: id };
-      await this.redis.publish('courseUpdated', JSON.stringify(message));
-      return message;
+      return { message: 'course deleted successfully' };
     } catch (err) {
       console.log(err);
       throw new BadRequestException('course could not be deleted');
