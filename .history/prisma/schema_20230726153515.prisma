@@ -71,7 +71,7 @@ model School{
   full_name String @unique
   acronime String? @unique
   location Json?
-  logo String @unique
+ 
   address String?
   course Course[]
 }
