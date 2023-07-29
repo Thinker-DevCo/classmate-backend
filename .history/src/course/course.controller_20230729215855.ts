@@ -40,9 +40,9 @@ export class CourseController {
     return this.courseService.searchCourse(query);
   }
 
-  @Get('/querybyschoolname')
-  queryCoursesBySchoolName(@Query('school_name') query: string) {
-    return this.courseService.queryCoursesBySchoolName(query);
+  @Get('/querybyschoolname/id=:id')
+  queryCoursesBySchoolName(@Param('id') id: string) {
+    return this.courseService.queryCoursesBySchoolName(id);
   }
 
   @Delete('/deletecourse/id=:id')

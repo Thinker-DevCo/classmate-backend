@@ -83,18 +83,18 @@ export class CourseService {
 
   async queryCoursesBySchoolName(name: string) {
     try {
-      const courses = await this.prisma.course.findMany({
+      const query = await this.prisma.course.findFirst({
         where: {
           school: {
             acronime: {
-              equals: name,
+              contains: name,
               mode: 'insensitive',
             },
           },
         },
       });
       // if (!query) throw new NotFoundException('this school has no courses');
-      return courses;
+      return query;
     } catch (err) {
       console.log(err);
     }

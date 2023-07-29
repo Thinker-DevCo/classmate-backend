@@ -87,7 +87,7 @@ export class CourseService {
         where: {
           school: {
             acronime: {
-              equals: name,
+              contains: name,
               mode: 'insensitive',
             },
           },
