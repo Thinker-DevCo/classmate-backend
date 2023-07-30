@@ -81,29 +81,14 @@ export class CourseService {
     return search_result;
   }
 
-  async queryCoursesBySchoolName(query: string) {
+  async queryCoursesBySchoolName(name: string) {
     try {
-      const courses = await this.prisma.course.findMany({
+      const courses = await this.prisma.course.findFirst({
         where: {
-          school: {
-            OR: [
-              {
-                acronime: {
-                  equals: query,
-                  mode: 'insensitive',
-                },
-              },
-              {
-                full_name: {
-                  equals: query,
-                  mode: 'insensitive',
-                },
-              },
-            ],
-          },
+          schoolId: name,
         },
       });
-      // if (!query) throw new NotFoundException('this school has no courses');
+      // if (!courses) throw new NotFoundException('this school has no courses');
       return courses;
     } catch (err) {
       console.log(err);

@@ -42,7 +42,7 @@ export class SchoolService {
   async getAllSchools() {
     const cachedSchools = await this.redis.get('schools');
     if (cachedSchools) return JSON.parse(cachedSchools);
-    const schools = await this.prisma.school.findMany();
+    const schools = await this.prisma.school.findMany({});
 
     if (!schools)
       throw new NotFoundException('could not find any school information');

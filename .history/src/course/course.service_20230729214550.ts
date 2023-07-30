@@ -81,25 +81,15 @@ export class CourseService {
     return search_result;
   }
 
-  async queryCoursesBySchoolName(query: string) {
+  async queryCoursesBySchoolName(name: string) {
     try {
-      const courses = await this.prisma.course.findMany({
+      const courses = await this.prisma.course.findFirst({
         where: {
           school: {
-            OR: [
-              {
-                acronime: {
-                  equals: query,
-                  mode: 'insensitive',
-                },
-              },
-              {
-                full_name: {
-                  equals: query,
-                  mode: 'insensitive',
-                },
-              },
-            ],
+            acronime: {
+              contains: name,
+              mode: 'insensitive',
+            },
           },
         },
       });
