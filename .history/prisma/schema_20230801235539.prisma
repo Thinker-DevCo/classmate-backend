@@ -93,8 +93,7 @@ model Subject{
   semester Int?
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  lessons Lesson[]
-  assessments Assessment[] 
+  lesson Lesson[]
   @@unique([id, courseId])
 }
 
@@ -106,9 +105,7 @@ model Lesson{
   author String?
   classType LessonType
   subjectId String?
-  correctionId String? @unique
-  correction Correction? @relation(fields: [correctionId], references: [id])
-  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull) 
+  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade) 
   createdAt DateTime @default(now())
 }
 
@@ -116,31 +113,18 @@ model Lesson{
 model Assessment{
   id String @id @default(uuid())
   url String @unique
-  title String 
   type AssessmentType
-  period AssessmentPeriod
-  correctionId String? @unique
-  correction Correction? @relation(fields: [correctionId], references: [id])
-  subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
-  subjectId String?
-}
 
-model Correction{
-  id String @id @default(uuid())
-  url String @unique
-  assessment Assessment? 
-  lesson Lesson?
-}
 
+}
 
 enum AssessmentType {
   MINI_TEST
   TEST
   EXAM
-  EXTRA
 }
 
-enum AssessmentPeriod {
+enum AssessmentNum {
   ONE
   TWO
   THREE

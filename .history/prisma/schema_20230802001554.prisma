@@ -118,7 +118,7 @@ model Assessment{
   url String @unique
   title String 
   type AssessmentType
-  period AssessmentPeriod
+  perdiod AssessmentPeriod
   correctionId String? @unique
   correction Correction? @relation(fields: [correctionId], references: [id])
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)

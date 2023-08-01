@@ -73,7 +73,7 @@ export class LessonService {
       return lesson;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('could not update the lesson information');
+      throw new BadRequestException('could not update the leesson information');
     }
   }
 
@@ -90,7 +90,7 @@ export class LessonService {
       return message;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('could not delete the lesson information');
+      throw new BadRequestException('could not delete the leesson information');
     }
   }
 }
