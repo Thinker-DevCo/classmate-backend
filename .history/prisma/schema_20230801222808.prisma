@@ -99,7 +99,7 @@ model Subject{
 model Classes{
   id String @id @default(uuid())
   title String
-  url String @unique
+  url String 
   summary String?
   author String?
   classType ClassType

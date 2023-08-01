@@ -99,17 +99,13 @@ model Subject{
 model Classes{
   id String @id @default(uuid())
   title String
-  url String @unique
+  url String 
   summary String?
   author String?
-  classType ClassType
   createdAt DateTime @default(now())
 }
 
-enum ClassType {
-  EXERCISE
-  APPOINTAMENTS
-}
+
 
 
 

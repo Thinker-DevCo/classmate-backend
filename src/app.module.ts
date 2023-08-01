@@ -16,6 +16,7 @@ import { CourseModule } from './course/course.module';
 import { CollegeStudentModule } from './college-student/college-student.module';
 import { SubjectService } from './subject/subject.service';
 import { SubjectModule } from './subject/subject.module';
+import { ClassesModule } from './classes/classes.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SubjectModule } from './subject/subject.module';
     CourseModule,
     CollegeStudentModule,
     SubjectModule,
+    ClassesModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],
