@@ -3,7 +3,7 @@ enum ClassType {
   EXERCISE = 'EXERCISE',
   APPOINTAMENTS = 'APPOINTAMENTS',
 }
-export class CreateClassDto {
+export class CreateLessonDto {
   @IsString()
   @IsNotEmpty()
   title: string;

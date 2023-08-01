@@ -104,8 +104,8 @@ model Lesson{
   summary String?
   author String?
   classType LessonType
-  subjectId String?
-  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade) 
+  subjectId String
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade) 
   createdAt DateTime @default(now())
 }
 
