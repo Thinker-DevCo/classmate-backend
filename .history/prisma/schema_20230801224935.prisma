@@ -93,23 +93,20 @@ model Subject{
   semester Int?
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  lesson Lesson[]
   @@unique([id, courseId])
 }
 
-model Lesson{
+model lesson{
   id String @id @default(uuid())
   title String
   url String @unique
   summary String?
   author String?
-  classType LessonType
-  subjectId String?
-  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade) 
+  classType ClassType
   createdAt DateTime @default(now())
 }
 
-enum LessonType {
+enum ClassType {
   EXERCISE
   APPOINTAMENTS
 }

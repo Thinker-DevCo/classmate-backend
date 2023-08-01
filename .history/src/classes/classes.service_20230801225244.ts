@@ -3,22 +3,23 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { CreateClassDto } from './dto/create-class.dto';
-import { UpdateClassDto } from './dto/update-class.dto';
+import { CreateLessonDto } from './dto/create-lesson.dto';
+import { UpdateClassDto } from './dto/update-lesson.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
+
 @Injectable()
-export class ClassesService {
+export class LessonService {
   constructor(
     private readonly redis: RedisService,
     private prisma: PrismaService,
   ) {}
 
-  async create(dto: CreateClassDto) {
+  async create(dto: CreateLessonDto) {
     try {
-      const newClass = await this.prisma.classes.create({
+      const newClass = await this.prisma.lesson.create({
         data: { ...dto },
       });
 
@@ -36,8 +37,11 @@ export class ClassesService {
     }
   }
 
-  findAll() {
-    return `This action returns all classes`;
+  async findAll() {
+    const cachedClasses = await this.redis.get('classes')
+    if(cachedClasses) return JSON.parse(cachedClasses)
+    const classes = await this.prisma.lesson.
+
   }
 
   findOne(id: number) {
