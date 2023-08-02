@@ -21,7 +21,6 @@ export class CreateLessonDto {
   @IsUrl()
   @IsOptional()
   correctionUrl?: string;
-
   @IsEnum(ClassType)
   @IsNotEmpty()
   classType: ClassType;

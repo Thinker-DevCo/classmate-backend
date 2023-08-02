@@ -60,6 +60,7 @@ export class LessonService {
           },
         },
       },
+      take: 1,
     });
     if (!lessons) throw new NotFoundException('Could not find any lessons');
     await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);

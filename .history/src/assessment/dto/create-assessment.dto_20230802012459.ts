@@ -37,9 +37,9 @@ export class CreateAssessmentDto {
   @Validate((value) => isValidTestPeriod(value))
   period: AssessmentPeriod;
 
-  @IsUrl()
+  @IsString()
   @IsOptional()
-  correctionUrl: string;
+  correctionId?: string;
 
   @IsString()
   @IsOptional()

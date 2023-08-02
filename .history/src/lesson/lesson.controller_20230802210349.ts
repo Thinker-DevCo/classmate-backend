@@ -20,7 +20,7 @@ export class LessonController {
     return this.lessonService.create(createClassDto);
   }
 
-  @Get('/getalllessons')
+  @Get()
   findAll() {
     return this.lessonService.findAll();
   }

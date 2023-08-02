@@ -41,20 +41,12 @@ export class LessonService {
     const cachedClasses = await this.redis.get('lessons');
     if (cachedClasses) return JSON.parse(cachedClasses);
     const lessons = await this.prisma.lesson.findMany({
-      select: {
-        title: true,
-        url: true,
+      include: {
         subject: {
-          select: {
-            name: true,
+          include: {
             course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    acronime: true,
-                  },
-                },
+              include: {
+                school: true,
               },
             },
           },
