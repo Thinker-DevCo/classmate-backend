@@ -52,7 +52,7 @@ export class LessonService {
                 name: true,
                 school: {
                   select: {
-                    logo: true,
+                    logo: true
                     acronime: true,
                   },
                 },
