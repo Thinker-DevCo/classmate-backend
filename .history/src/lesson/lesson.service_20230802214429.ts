@@ -52,7 +52,7 @@ export class LessonService {
                 name: true,
                 school: {
                   select: {
-                    acronime: true,
+                    acronime: ture,
                   },
                 },
               },

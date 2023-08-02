@@ -106,7 +106,7 @@ model Lesson{
   author String?
   classType LessonType
   subjectId String?
-  correctionUrl String?
+  correction Correction? 
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull) 
   createdAt DateTime @default(now())
 }
@@ -119,11 +119,20 @@ model Assessment{
   type AssessmentType
   period AssessmentPeriod
   year Int? 
-  correctionUrl String?
+  correction Correction? 
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?
 }
 
+model Correction{
+  id String @id @default(uuid())
+  title String
+  url String @unique
+  assessmentId String? @unique
+  assessment Assessment? @relation(fields: [assessmentId], references: [id])
+  lessonId String? @unique
+  lesson Lesson? @relation(fields: [lessonId], references: [id])
+}
 
 
 enum AssessmentType {
