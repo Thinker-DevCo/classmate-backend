@@ -102,7 +102,7 @@ export class AssessmentService {
   async queryAssessments() {
     const cachedAssessments = await this.redis.get('assessments');
     if (cachedAssessments) return JSON.parse(cachedAssessments);
-    const assessments = await this.prisma.assessment.findMany({
+    const lessons = await this.prisma.assessment.findMany({
       select: {
         title: true,
         url: true,
@@ -126,8 +126,8 @@ export class AssessmentService {
         },
       },
     });
-    if (!assessments) throw new NotFoundException('Could not find any lessons');
-    await this.redis.set('assessments', JSON.stringify(assessments), 'EX', 15);
-    return assessments;
+    if (!lessons) throw new NotFoundException('Could not find any lessons');
+    await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);
+    return lessons;
   }
 }

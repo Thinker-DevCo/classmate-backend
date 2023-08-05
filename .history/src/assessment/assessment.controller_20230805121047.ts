@@ -15,7 +15,7 @@ import { UpdateAssessmentDto } from './dto/update-assessment.dto';
 export class AssessmentController {
   constructor(private readonly assessmentService: AssessmentService) {}
 
-  @Post('/storeassessment')
+  @Post('storeassessment')
   create(@Body() createAssessmentDto: CreateAssessmentDto) {
     return this.assessmentService.create(createAssessmentDto);
   }
