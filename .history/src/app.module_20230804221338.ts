@@ -33,6 +33,7 @@ import { AssessmentModule } from './assessment/assessment.module';
     SubjectModule,
     LessonModule,
     AssessmentModule,
+    CorrectionModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],

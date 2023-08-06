@@ -16,8 +16,7 @@ import { CourseModule } from './course/course.module';
 import { CollegeStudentModule } from './college-student/college-student.module';
 import { SubjectService } from './subject/subject.service';
 import { SubjectModule } from './subject/subject.module';
-import { LessonModule } from './lesson/lesson.module';
-import { AssessmentModule } from './assessment/assessment.module';
+import { LessonModule } from './classes/lesson.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { AssessmentModule } from './assessment/assessment.module';
     CollegeStudentModule,
     SubjectModule,
     LessonModule,
-    AssessmentModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],

@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "darwin-arm64", "linux-musl-arm64-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "darwin-arm64", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -106,7 +106,8 @@ model Lesson{
   author String?
   classType LessonType
   subjectId String?
-  correctionUrl String?
+  correctionId String? @unique
+  correction Correction? @relation(fields: [correctionId], references: [id])
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull) 
   createdAt DateTime @default(now())
 }
@@ -117,13 +118,19 @@ model Assessment{
   url String @unique
   title String 
   type AssessmentType
-  period AssessmentPeriod
-  year Int? 
-  correctionUrl String?
+  perdiod AssessmentPeriod
+  correctionId String? @unique
+  correction Correction? @relation(fields: [correctionId], references: [id])
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?
 }
 
+model Correction{
+  id String @id @default(uuid())
+  url String @unique
+  assessment Assessment? 
+  lesson Lesson?
+}
 
 
 enum AssessmentType {
