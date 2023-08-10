@@ -21,7 +21,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   signup(@Body() dto: SignUpDto) {
     if (dto.provider && dto.providerUserId)
-      return this.authService.findOrCreateOauthUser(dto);
+      return this.authService.findOrCreateOauthUser;
     return this.authService.signUp(dto);
   }
 
@@ -29,12 +29,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   signin(@Body() dto: SignInDto) {
     return this.authService.signIn(dto);
-  }
-
-  @Post('signwithoauth')
-  @HttpCode(HttpStatus.OK)
-  signWithOAuth(@Body() dto: OauthDto) {
-    return this.authService.findOrCreateOauthUser(dto);
   }
 
   @UseGuards(AtGuard)

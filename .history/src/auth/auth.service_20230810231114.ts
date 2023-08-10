@@ -169,6 +169,32 @@ export class AuthService {
       },
     });
   }
+  async updateRtOAuthHash(userId: string, rt: string) {
+    const hash = await this.hashData(rt);
+    await this.prisma.oAuthUser.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        hashedRt: hash,
+      },
+    });
+  }
+  async refreshOAuthTokens(userId: string, rt: string) {
+    const user = await this.prisma.oAuthUser.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) throw new NotFoundException('user was not found');
+
+    const rtMatches = await this.compareHash(rt, user.hashedRt);
+    if (!rtMatches) throw new ForbiddenException('Access denied');
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
+  }
 
   //hashes the inputed strings and returns it
   hashData(data: string): Promise<string> {
