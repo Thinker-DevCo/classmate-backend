@@ -18,7 +18,6 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  app.setGlobalPrefix('api');
   app.enableCors();
   await app.listen(8000, '0.0.0.0');
 }
