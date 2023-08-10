@@ -61,7 +61,6 @@ export class AuthService {
         email: dto.email,
       },
     });
-
     if (!user) {
       user = await this.prisma.user.create({
         data: {
@@ -72,7 +71,6 @@ export class AuthService {
           profile_image: dto.profile_image,
         },
       });
-
       const tokens = await this.getTokens(user.id, user.email);
       await this.updateRtHash(user.id, tokens.refresh_token);
       delete user.hash_password, delete user.hashedRt;
@@ -82,17 +80,10 @@ export class AuthService {
         tokens: tokens,
       };
     }
-
-    if (user.hash_password) {
-      await this.prisma.user.update({
-        where: {
-          email: dto.email,
-        },
-        data: {
-          profile_image: dto.profile_image,
-        },
-      });
-    }
+    if (user.providerUserId !== dto.providerUserId)
+      throw new UnauthorizedException(
+        'sent providerId does not correspont to the user provider id ',
+      );
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRtHash(user.id, tokens.refresh_token);
     delete user.hash_password, delete user.hashedRt;
@@ -111,11 +102,11 @@ export class AuthService {
     });
     if (user.provider && user.providerUserId)
       throw new UnauthorizedException('wrong credentials ');
-
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
     const tokens = await this.getTokens(user.id, user.email);
+
     await this.updateRtHash(user.id, tokens.refresh_token);
     delete user.hash_password;
     delete user.hashedRt;

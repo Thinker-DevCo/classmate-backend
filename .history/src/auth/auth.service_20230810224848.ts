@@ -82,6 +82,10 @@ export class AuthService {
         tokens: tokens,
       };
     }
+    if (user.providerUserId !== dto.providerUserId)
+      throw new UnauthorizedException(
+        'sent providerId does not correspont to the user provider id ',
+      );
 
     if (user.hash_password) {
       await this.prisma.user.update({

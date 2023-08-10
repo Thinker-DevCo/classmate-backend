@@ -55,53 +55,6 @@ export class AuthService {
     }
   }
 
-  async findOrCreateOauthUser(dto: OauthDto) {
-    let user = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-
-    if (!user) {
-      user = await this.prisma.user.create({
-        data: {
-          email: dto.email,
-          username: dto.username,
-          provider: dto.provider,
-          providerUserId: dto.providerUserId,
-          profile_image: dto.profile_image,
-        },
-      });
-
-      const tokens = await this.getTokens(user.id, user.email);
-      await this.updateRtHash(user.id, tokens.refresh_token);
-      delete user.hash_password, delete user.hashedRt;
-
-      return {
-        user: user,
-        tokens: tokens,
-      };
-    }
-
-    if (user.hash_password) {
-      await this.prisma.user.update({
-        where: {
-          email: dto.email,
-        },
-        data: {
-          profile_image: dto.profile_image,
-        },
-      });
-    }
-    const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
-    delete user.hash_password, delete user.hashedRt;
-
-    return {
-      user: user,
-      tokens: tokens,
-    };
-  }
   //returns the user with an access token, and reloads the refresh token
   async signIn(dto: SignInDto) {
     const user = await this.prisma.user.findUnique({
@@ -111,11 +64,11 @@ export class AuthService {
     });
     if (user.provider && user.providerUserId)
       throw new UnauthorizedException('wrong credentials ');
-
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
     const tokens = await this.getTokens(user.id, user.email);
+
     await this.updateRtHash(user.id, tokens.refresh_token);
     delete user.hash_password;
     delete user.hashedRt;
