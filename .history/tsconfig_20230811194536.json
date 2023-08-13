@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "lib": ["ESNext"],
+    "module": "CommonJS",
     "declaration": true,
     "removeComments": true,
     "moduleResolution": "NodeNext",

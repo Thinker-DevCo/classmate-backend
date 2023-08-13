@@ -5,7 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import fastifyCookie from 'fastify-cookie';
+
 async function bootstrap() {
   // const app = await NestFactory.create<NestFastifyApplication>(
   //   AppModule,

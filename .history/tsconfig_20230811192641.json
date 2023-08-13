@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "ESNext",
     "declaration": true,
     "removeComments": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node16",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,

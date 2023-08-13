@@ -6,7 +6,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PersonalInfoModule } from './personal-info/personal-info.module';
-
+import * as cookieParser from 'cookie-parser';
+import * as redisStore from 'cache-manager-redis-store';
+import type { RedisClientOptions } from 'redis';
 import { RedisModule } from './redis/redis.module';
 import { SchoolModule } from './school/school.module';
 import { CourseService } from './course/course.service';
@@ -17,6 +19,8 @@ import { SubjectModule } from './subject/subject.module';
 import { LessonModule } from './lesson/lesson.module';
 import { AssessmentModule } from './assessment/assessment.module';
 import { PrismaService } from './prisma/prisma.service';
+import { DMMFClass } from '@prisma/client/runtime';
+import { Prisma } from '@prisma/client';
 
 import('adminjs').then((AdminJs) => {
   import('@adminjs/prisma').then((AdminJSPrisma) => {
@@ -48,63 +52,22 @@ import('adminjs').then((AdminJs) => {
             // Note: Feel free to contribute to this documentation if you find a Nest-way of
             // injecting PrismaService into AdminJS module
             const prisma = new PrismaService();
+            await prisma.$connect();
 
             // `_baseDmmf` contains necessary Model metadata but it is a private method
             // so it isn't included in PrismaClient type
 
+            const dmmf = (await (prisma as any)._baseDmmf) as DMMFClass;
+            console.log(dmmf);
             return {
               adminJsOptions: {
                 rootPath: '/admin',
-                branding: {
-                  companyName: 'Classmate',
-                },
                 resources: [
                   {
                     resource: {
                       model: AdminJSPrisma.getModelByName('User'),
                       client: prisma,
                     },
-
-                    options: {},
-                  },
-                  {
-                    resource: {
-                      model: AdminJSPrisma.getModelByName('School'),
-                      client: prisma,
-                    },
-
-                    options: {},
-                  },
-                  {
-                    resource: {
-                      model: AdminJSPrisma.getModelByName('Course'),
-                      client: prisma,
-                    },
-
-                    options: {},
-                  },
-                  {
-                    resource: {
-                      model: AdminJSPrisma.getModelByName('Subject'),
-                      client: prisma,
-                    },
-
-                    options: {},
-                  },
-                  {
-                    resource: {
-                      model: AdminJSPrisma.getModelByName('Assessment'),
-                      client: prisma,
-                    },
-
-                    options: {},
-                  },
-                  {
-                    resource: {
-                      model: AdminJSPrisma.getModelByName('Lesson'),
-                      client: prisma,
-                    },
-
                     options: {},
                   },
                 ],
