@@ -39,7 +39,6 @@ export class UserFavoriteSubjectController {
     return this.userFavoriteSubjectService.findOne(+id);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(
     @Param('id') id: string,

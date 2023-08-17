@@ -1,7 +1,5 @@
 import {
-  BadRequestException,
   ForbiddenException,
-  HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -88,11 +86,9 @@ export class UserFavoriteSubjectService {
           },
         },
       });
-      const message = { message: 'subject remove from favorite' };
+      const message = { message: 'lesson deleted successfully' };
 
       return message;
-    } catch (error) {
-      throw new BadRequestException('Could not remove subject from favorite');
-    }
+    } catch (error) {}
   }
 }

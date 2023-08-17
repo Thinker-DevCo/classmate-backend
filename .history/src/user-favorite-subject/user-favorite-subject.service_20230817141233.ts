@@ -1,7 +1,5 @@
 import {
-  BadRequestException,
   ForbiddenException,
-  HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -78,21 +76,20 @@ export class UserFavoriteSubjectService {
     return `This action updates a #${id} userFavoriteSubject`;
   }
 
-  async remove(userId: string, subjectId: string) {
+  async remove(userId: string, subjectID: string) {
     try {
       await this.prisma.userFavoriteSubject.delete({
         where: {
-          userId_subjectId: {
-            userId: userId,
-            subjectId: subjectId,
-          },
+          AND: [
+            {
+              subjectId: subjectID,
+            },
+            {
+              userId: userId,
+            },
+          ],
         },
       });
-      const message = { message: 'subject remove from favorite' };
-
-      return message;
-    } catch (error) {
-      throw new BadRequestException('Could not remove subject from favorite');
-    }
+    } catch (error) {}
   }
 }

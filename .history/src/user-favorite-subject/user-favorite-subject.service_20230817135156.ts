@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  HttpException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateUserFavoriteSubjectDto } from './dto/create-user-favorite-subject.dto';
 import { UpdateUserFavoriteSubjectDto } from './dto/update-user-favorite-subject.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -49,7 +43,7 @@ export class UserFavoriteSubjectService {
   }
 
   async findAll(userid: string) {
-    const cachedfavorites = await this.redis.get('favorites');
+    const cachedfavorites = await this.redis.get('favorite');
     if (cachedfavorites) return JSON.parse(cachedfavorites);
     const favorites = await this.prisma.userFavoriteSubject.findMany({
       where: {
@@ -59,12 +53,7 @@ export class UserFavoriteSubjectService {
         subject: true,
       },
     });
-    if (!favorites)
-      throw new NotFoundException(
-        'This user does not have any favorite subject',
-      );
-    await this.redis.set('favorites', JSON.stringify(favorites), 'EX', 15);
-    return favorites;
+    return `This action returns all userFavoriteSubject`;
   }
 
   findOne(id: number) {
@@ -78,21 +67,7 @@ export class UserFavoriteSubjectService {
     return `This action updates a #${id} userFavoriteSubject`;
   }
 
-  async remove(userId: string, subjectId: string) {
-    try {
-      await this.prisma.userFavoriteSubject.delete({
-        where: {
-          userId_subjectId: {
-            userId: userId,
-            subjectId: subjectId,
-          },
-        },
-      });
-      const message = { message: 'subject remove from favorite' };
-
-      return message;
-    } catch (error) {
-      throw new BadRequestException('Could not remove subject from favorite');
-    }
+  remove(id: number) {
+    return `This action removes a #${id} userFavoriteSubject`;
   }
 }

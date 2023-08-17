@@ -8,8 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserFavoriteSubjectService } from './user-favorite-subject.service';
 import { CreateUserFavoriteSubjectDto } from './dto/create-user-favorite-subject.dto';
@@ -39,7 +37,6 @@ export class UserFavoriteSubjectController {
     return this.userFavoriteSubjectService.findOne(+id);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -51,7 +48,6 @@ export class UserFavoriteSubjectController {
     );
   }
 
-  @HttpCode(HttpStatus.ACCEPTED)
   @Delete('/deleteFavorite/')
   remove(
     @GetCurrentUserId() userId: string,
