@@ -17,6 +17,7 @@ import { SubjectModule } from './subject/subject.module';
 import { LessonModule } from './lesson/lesson.module';
 import { AssessmentModule } from './assessment/assessment.module';
 import { PrismaService } from './prisma/prisma.service';
+import { UserFavoriteSubjectModule } from './user-favorite-subject/user-favorite-subject.module';
 
 import('adminjs').then((AdminJs) => {
   import('@adminjs/prisma').then((AdminJSPrisma) => {
@@ -109,6 +110,7 @@ import('adminjs').then((AdminJs) => {
         }),
       ),
     ),
+    UserFavoriteSubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],
