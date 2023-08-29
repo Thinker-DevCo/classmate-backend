@@ -76,6 +76,5 @@ export class AuthController {
   ) {
     const tokens = await this.authService.refreshTokens(userId, rt);
     this.authService.setTokensCookies(res, tokens);
-    return { message: 'tokens successfully refreshed' };
   }
 }

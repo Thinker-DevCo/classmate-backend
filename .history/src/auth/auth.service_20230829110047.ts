@@ -211,18 +211,18 @@ export class AuthService {
     };
   }
   setTokensCookies(res: Response, tokens: Tokens) {
-    res.cookie('access_token', tokens.access_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000),
-    });
+    // res.cookie('access_token', tokens.access_token, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: 'lax',
+    //   expires: new Date(Date.now() + 60 * 1000),
+    // });
 
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000 * 20 * 24 * 7),
+      expires: new Date(Date.now() + 60 * 20 * 24 * 7),
     });
   }
 }

@@ -210,7 +210,7 @@ export class AuthService {
       refresh_token: rt,
     };
   }
-  setTokensCookies(res: Response, tokens: Tokens) {
+  private setTokensCookies(res: Response, tokens: Tokens) {
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: false,
@@ -222,7 +222,7 @@ export class AuthService {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000 * 20 * 24 * 7),
+      expires: new Date(Date.now() + 60 * 20 * 24 * 7),
     });
   }
 }

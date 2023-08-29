@@ -75,7 +75,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.authService.refreshTokens(userId, rt);
-    this.authService.setTokensCookies(res, tokens);
+    // this.authService.setTokensCookies(res, tokens);
     return { message: 'tokens successfully refreshed' };
   }
 }

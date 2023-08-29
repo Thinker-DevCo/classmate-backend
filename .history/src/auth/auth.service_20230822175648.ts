@@ -1,7 +1,6 @@
 import {
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   Res,
   UnauthorizedException,
@@ -15,7 +14,6 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { randomBytes } from 'crypto';
 import { OauthDto } from './dto/oauth.dto';
-import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -129,22 +127,17 @@ export class AuthService {
 
   //deletes and invalidates the access token and refresh token, and stores the refresh token on the blacklist
   async logout(userId: string) {
-    try {
-      await this.prisma.user.updateMany({
-        where: {
-          id: userId,
-          hashedRt: {
-            not: null,
-          },
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        hashedRt: {
+          not: null,
         },
-        data: {
-          hashedRt: null,
-        },
-      });
-      return { message: 'User successfully logged out' };
-    } catch (err) {
-      throw new InternalServerErrorException('failed to logut');
-    }
+      },
+      data: {
+        hashedRt: null,
+      },
+    });
   }
 
   //refreshes the access token and refresh token
@@ -209,20 +202,5 @@ export class AuthService {
       access_token: at,
       refresh_token: rt,
     };
-  }
-  setTokensCookies(res: Response, tokens: Tokens) {
-    res.cookie('access_token', tokens.access_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000),
-    });
-
-    res.cookie('refresh_token', tokens.refresh_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000 * 20 * 24 * 7),
-    });
   }
 }

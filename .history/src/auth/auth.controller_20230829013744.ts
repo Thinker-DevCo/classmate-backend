@@ -22,19 +22,10 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async signup(
-    @Body() dto: SignUpDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    let signup: any;
-    if (dto.provider && dto.providerUserId) {
-      signup = await this.authService.findOrCreateOauthUser(dto);
-    } else {
-      signup = await this.authService.signUp(dto);
-    }
-    this.authService.setTokensCookies(res, signup.tokens);
-    delete signup.tokens;
-    return signup;
+  signup(@Body() dto: SignUpDto) {
+    if (dto.provider && dto.providerUserId)
+      return this.authService.findOrCreateOauthUser(dto);
+    return this.authService.signUp(dto);
   }
 
   @Post('signin')
@@ -44,8 +35,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const login = await this.authService.signIn(dto);
-    this.authService.setTokensCookies(res, login.tokens);
-    delete login.tokens;
+    res.cookie('access_token', login.tokens.access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+    });
+    // delete login.tokens;
     return login;
   }
 
@@ -63,19 +59,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
     return this.authService.logout(userid);
   }
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(
+  refreshTokens(
     @GetCurrentUserId() userId: string,
     @GetCurrentUser('refreshToken') rt: string,
-    @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.refreshTokens(userId, rt);
-    this.authService.setTokensCookies(res, tokens);
-    return { message: 'tokens successfully refreshed' };
+    return this.authService.refreshTokens(userId, rt);
   }
 }

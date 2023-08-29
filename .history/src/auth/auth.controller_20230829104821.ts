@@ -63,19 +63,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
     return this.authService.logout(userid);
   }
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(
+  refreshTokens(
     @GetCurrentUserId() userId: string,
     @GetCurrentUser('refreshToken') rt: string,
-    @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.refreshTokens(userId, rt);
-    this.authService.setTokensCookies(res, tokens);
-    return { message: 'tokens successfully refreshed' };
+    return this.authService.refreshTokens(userId, rt);
   }
 }

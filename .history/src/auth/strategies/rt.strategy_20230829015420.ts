@@ -17,8 +17,8 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     });
   }
   private static extractJWTFromCookie(req: Request): string | null {
-    if (req.cookies && req.cookies.refresh_token) {
-      return req.cookies.refresh_token;
+    if (req.cookies && req.cookies.access_token) {
+      return req.cookies.access_token;
     }
     return null;
   }

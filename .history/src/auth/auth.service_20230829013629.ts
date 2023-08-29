@@ -15,7 +15,6 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { randomBytes } from 'crypto';
 import { OauthDto } from './dto/oauth.dto';
-import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -209,20 +208,5 @@ export class AuthService {
       access_token: at,
       refresh_token: rt,
     };
-  }
-  setTokensCookies(res: Response, tokens: Tokens) {
-    res.cookie('access_token', tokens.access_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000),
-    });
-
-    res.cookie('refresh_token', tokens.refresh_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 60 * 1000 * 20 * 24 * 7),
-    });
   }
 }

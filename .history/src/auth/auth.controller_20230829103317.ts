@@ -26,13 +26,37 @@ export class AuthController {
     @Body() dto: SignUpDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    let signup: any;
     if (dto.provider && dto.providerUserId) {
-      signup = await this.authService.findOrCreateOauthUser(dto);
-    } else {
-      signup = await this.authService.signUp(dto);
+      const signup = await this.authService.findOrCreateOauthUser(dto);
+      res.cookie('access_token', signup.tokens.access_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 60 * 1000),
+      });
+      res.cookie('refresh_token', signup.tokens.refresh_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 60 * 20 * 24 * 7),
+      });
+      delete signup.tokens;
+      return signup;
     }
-    this.authService.setTokensCookies(res, signup.tokens);
+
+    const signup = await this.authService.signUp(dto);
+    res.cookie('access_token', signup.tokens.access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 60 * 1000),
+    });
+    res.cookie('refresh_token', signup.tokens.refresh_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 60 * 20 * 24 * 7),
+    });
     delete signup.tokens;
     return signup;
   }
@@ -44,7 +68,18 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const login = await this.authService.signIn(dto);
-    this.authService.setTokensCookies(res, login.tokens);
+    res.cookie('access_token', login.tokens.access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 60 * 1000),
+    });
+    res.cookie('refresh_token', login.tokens.refresh_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 60 * 20 * 24 * 7),
+    });
     delete login.tokens;
     return login;
   }
@@ -63,19 +98,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
     return this.authService.logout(userid);
   }
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(
+  refreshTokens(
     @GetCurrentUserId() userId: string,
     @GetCurrentUser('refreshToken') rt: string,
-    @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.refreshTokens(userId, rt);
-    this.authService.setTokensCookies(res, tokens);
-    return { message: 'tokens successfully refreshed' };
+    return this.authService.refreshTokens(userId, rt);
   }
 }
