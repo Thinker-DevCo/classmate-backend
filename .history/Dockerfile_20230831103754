@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+RUN apk update && apk add --no-cache python3 make g++
+# Create app directory
+WORKDIR /app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json yarn.lock ./
+COPY prisma ./prisma/
+
+# Install app dependencies
+RUN yarn
+
+
+COPY . /app
+
+
+EXPOSE 8000
+
+CMD [ "yarn", "start:prod" ]
+
+

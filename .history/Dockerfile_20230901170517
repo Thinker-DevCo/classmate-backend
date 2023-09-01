@@ -1,0 +1,24 @@
+FROM node:18-alpine
+
+
+# Create app directory
+WORKDIR /app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json yarn.lock ./
+COPY prisma ./prisma/
+
+RUN npm install -g node-gyp
+# Install app dependencies
+RUN apk --no-cache --virtual build-dependencies add \ python3 \ make \ g++ \ && yarn \ && apk del build-dependencies
+
+
+
+COPY . /app
+
+
+EXPOSE 8000
+
+CMD [ "yarn", "start:prod" ]
+
+
