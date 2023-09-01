@@ -8,12 +8,9 @@ WORKDIR /app
 COPY package*.json yarn.lock ./
 COPY prisma ./prisma/
 
-
+RUN npm install -g node-gyp
 # Install app dependencies
-
-RUN yarn 
-
-
+RUN apk --no-cache --virtual build-dependencies add \ python \ make \ g++ \ && yarn \ && apk del build-dependencies
 
 
 

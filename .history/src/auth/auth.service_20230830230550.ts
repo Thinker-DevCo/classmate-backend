@@ -15,8 +15,6 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OauthDto } from './dto/oauth.dto';
 import { Response } from 'express';
-
-import { randomBytes, scrypt } from 'crypto';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -160,20 +158,35 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('user was not found');
+    // console.log(user.hashedRt);
+    // console.log(await this.hashData(rt));
+    const providedHashedRt = await this.hashData(rt);
 
-    const rtMatches = await this.comparehashTokens(rt, user.hashedRt);
+    const rtMatches = await this.compareHash(rt, user.hashedRt);
+    const receivedHashedToken = await this.hashData(rt);
+    console.log('Received Hashed Token:', receivedHashedToken);
+    console.log('Database Hashed Token:', user.hashedRt);
 
     if (!rtMatches) throw new ForbiddenException('Access denied');
-
+    console.log('Refresh Token Matches:', rtMatches);
     const tokens = await this.getTokens(user.id, user.email);
-
+    console.log(rt);
+    console.log(tokens.refresh_token);
+    console.log(
+      await bcrypt.compare(
+        String(
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZGMxNTUyZS0zNThmLTRmYzYtODgwYy0yYzZmMTFlZjQ3OGMiLCJlbWFpbCI6ImtlbHZpbjEwMEBnbWFpbC5jb20iLCJpYXQiOjE2OTM0Mjc2OTYsImV4cCI6MTY5MzYyOTI5Nn0.-kzSPxKMoYOX2OI7ZS-PyYUJ4ZTNsihYw0axoxH-qrL',
+        ),
+        String(await this.hashData(tokens.refresh_token)),
+      ),
+    );
     await this.updateRtHash(user.id, tokens.refresh_token);
     return tokens;
   }
 
   //updates and hashes the refresh token on the database, returns the new refresh token
   async updateRtHash(userId: string, rt: string) {
-    const hash = await this.hashTokens(rt);
+    const hash = await this.hashData(rt);
     await this.prisma.user.update({
       where: {
         id: userId,
@@ -193,33 +206,7 @@ export class AuthService {
   compareHash(salt: string, hash: string): Promise<boolean> {
     return bcrypt.compare(salt, hash);
   }
-  async hashTokens(data: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const salt = randomBytes(16).toString('hex');
 
-      scrypt(data, salt, 64, (err, derivedKey) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(salt + ':' + derivedKey.toString('hex'));
-        }
-      });
-    });
-  }
-
-  async comparehashTokens(data: string, hash: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const [salt, key] = hash.split(':');
-
-      scrypt(data, salt, 64, (err, derivedKey) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(key === derivedKey.toString('hex'));
-        }
-      });
-    });
-  }
   //returns the access and refresh tokens
   async getTokens(userId: string, email: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
@@ -227,7 +214,6 @@ export class AuthService {
         {
           sub: userId,
           email,
-          uniqueId: Math.random(),
         },
         { secret: 'at-secret', expiresIn: 60 },
       ),
@@ -235,7 +221,6 @@ export class AuthService {
         {
           sub: userId,
           email,
-          uniqueId: Math.random(),
         },
         { secret: 'rt-secret', expiresIn: 60 * 20 * 24 * 7 },
       ),

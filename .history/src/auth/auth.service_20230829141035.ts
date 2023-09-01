@@ -13,10 +13,9 @@ import { SignInDto, SignUpDto } from './dto';
 import { Tokens } from './@types';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { randomBytes } from 'crypto';
 import { OauthDto } from './dto/oauth.dto';
 import { Response } from 'express';
-
-import { randomBytes, scrypt } from 'crypto';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
@@ -114,11 +113,7 @@ export class AuthService {
     });
     if (user.provider && user.providerUserId)
       throw new UnauthorizedException('wrong credentials ');
-    console.log(
-      'this is the hashed password: ',
-      await this.hashData(dto.password),
-    );
-    console.log('this is the hashed password in the db: ', user.hash_password);
+
     const match = await this.compareHash(dto.password, user.hash_password);
     if (!match) throw new ForbiddenException('Incorrect password');
 
@@ -160,26 +155,26 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('user was not found');
-
-    const rtMatches = await this.comparehashTokens(rt, user.hashedRt);
+    console.log(user.hashedRt);
+    console.log(this.hashData(rt));
+    const rtMatches = await this.compareHash(rt, user.hashedRt);
 
     if (!rtMatches) throw new ForbiddenException('Access denied');
 
     const tokens = await this.getTokens(user.id, user.email);
-
     await this.updateRtHash(user.id, tokens.refresh_token);
     return tokens;
   }
 
   //updates and hashes the refresh token on the database, returns the new refresh token
   async updateRtHash(userId: string, rt: string) {
-    const hash = await this.hashTokens(rt);
+    const hash = await this.hashData(rt);
     await this.prisma.user.update({
       where: {
         id: userId,
       },
       data: {
-        hashedRt: hash,
+        hashedRt: rt,
       },
     });
   }
@@ -190,36 +185,10 @@ export class AuthService {
   }
 
   //compares two hashes and returns true if they are equal and false otherwise
-  compareHash(salt: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(salt, hash);
-  }
-  async hashTokens(data: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const salt = randomBytes(16).toString('hex');
-
-      scrypt(data, salt, 64, (err, derivedKey) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(salt + ':' + derivedKey.toString('hex'));
-        }
-      });
-    });
+  compareHash(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 
-  async comparehashTokens(data: string, hash: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const [salt, key] = hash.split(':');
-
-      scrypt(data, salt, 64, (err, derivedKey) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(key === derivedKey.toString('hex'));
-        }
-      });
-    });
-  }
   //returns the access and refresh tokens
   async getTokens(userId: string, email: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
@@ -227,7 +196,6 @@ export class AuthService {
         {
           sub: userId,
           email,
-          uniqueId: Math.random(),
         },
         { secret: 'at-secret', expiresIn: 60 },
       ),
@@ -235,7 +203,6 @@ export class AuthService {
         {
           sub: userId,
           email,
-          uniqueId: Math.random(),
         },
         { secret: 'rt-secret', expiresIn: 60 * 20 * 24 * 7 },
       ),

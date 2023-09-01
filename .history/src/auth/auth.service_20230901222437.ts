@@ -15,7 +15,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OauthDto } from './dto/oauth.dto';
 import { Response } from 'express';
-
+import * as argon2 from 'argon2';
 import { randomBytes, scrypt } from 'crypto';
 @Injectable()
 export class AuthService {

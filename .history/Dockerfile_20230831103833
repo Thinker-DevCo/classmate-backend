@@ -8,13 +8,8 @@ WORKDIR /app
 COPY package*.json yarn.lock ./
 COPY prisma ./prisma/
 
-
 # Install app dependencies
-
-RUN yarn 
-
-
-
+RUN yarn
 
 
 COPY . /app

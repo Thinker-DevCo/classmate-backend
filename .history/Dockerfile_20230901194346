@@ -13,8 +13,8 @@ COPY prisma ./prisma/
 
 RUN yarn 
 
-
-
+RUN npm install -g node-gyp
+RUN yarn add argon2
 
 
 COPY . /app

@@ -1,20 +1,14 @@
 FROM node:18-alpine
 
-
 # Create app directory
 WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json yarn.lock ./
+COPY package*.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
-
 # Install app dependencies
-
-RUN yarn 
-
-
-
+RUN yarn
 
 
 COPY . /app
