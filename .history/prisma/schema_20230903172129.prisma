@@ -55,7 +55,7 @@ model CollegeStudentInfo {
 //school related tables
 model School{
   id String @id @default(uuid())
-  name String @unique
+name String @unique
   acronime String? @unique
   logo String @unique
   address String?
