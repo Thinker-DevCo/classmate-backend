@@ -31,9 +31,8 @@ export class CollegeStudentController {
     return this.collegeStudentService.storeInfo(userId, dto);
   }
 
-  @UseGuards(AtGuard)
-  @Get('/getStudentInfoById')
-  getStudentInfoById(@GetCurrentUserId() id: string) {
+  @Get('/getStudentInfoById/id=:id')
+  getStudentInfoById(@Param('id') id: string) {
     return this.collegeStudentService.getStudentInfoById(id);
   }
 

@@ -33,21 +33,7 @@ export class AuthService {
           profile_image: dto.profile_image,
         },
         include: {
-          collegeStudent: {
-            select: {
-              current_year: true,
-              course: {
-                select: {
-                  name: true,
-                  school: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
+          collegeStudent: true,
         },
       });
       const tokens = await this.getTokens(user.id, user.email);
@@ -81,21 +67,7 @@ export class AuthService {
         email: dto.email,
       },
       include: {
-        collegeStudent: {
-          select: {
-            current_year: true,
-            course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        collegeStudent: true,
       },
     });
 
@@ -109,21 +81,7 @@ export class AuthService {
           profile_image: dto.profile_image,
         },
         include: {
-          collegeStudent: {
-            select: {
-              current_year: true,
-              course: {
-                select: {
-                  name: true,
-                  school: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
+          collegeStudent: true,
         },
       });
 

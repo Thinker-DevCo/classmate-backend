@@ -13,7 +13,6 @@ import { CollegeStudentService } from './college-student.service';
 import { UpdateCollegeStudentDTO } from './dto/update-college-student.dto';
 import { AtStrategy } from 'src/auth/strategies';
 import { GetCurrentUserId } from 'src/common/decorators';
-import { AtGuard } from 'src/common/guards';
 
 @Controller({
   version: '1',
@@ -22,7 +21,7 @@ import { AtGuard } from 'src/common/guards';
 export class CollegeStudentController {
   constructor(private collegeStudentService: CollegeStudentService) {}
 
-  @UseGuards(AtGuard)
+  @UseGuards(AtStrategy)
   @Post('/storeinfo')
   storeinfo(
     @GetCurrentUserId() userId: string,
@@ -31,9 +30,8 @@ export class CollegeStudentController {
     return this.collegeStudentService.storeInfo(userId, dto);
   }
 
-  @UseGuards(AtGuard)
-  @Get('/getStudentInfoById')
-  getStudentInfoById(@GetCurrentUserId() id: string) {
+  @Get('/getStudentInfoById/id=:id')
+  getStudentInfoById(@Param('id') id: string) {
     return this.collegeStudentService.getStudentInfoById(id);
   }
 

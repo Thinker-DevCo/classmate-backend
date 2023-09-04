@@ -32,23 +32,6 @@ export class AuthService {
           hash_password: hash,
           profile_image: dto.profile_image,
         },
-        include: {
-          collegeStudent: {
-            select: {
-              current_year: true,
-              course: {
-                select: {
-                  name: true,
-                  school: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
       });
       const tokens = await this.getTokens(user.id, user.email);
       await this.updateRtHash(user.id, tokens.refresh_token);
@@ -81,21 +64,7 @@ export class AuthService {
         email: dto.email,
       },
       include: {
-        collegeStudent: {
-          select: {
-            current_year: true,
-            course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        collegeStudent: true,
       },
     });
 
@@ -107,23 +76,6 @@ export class AuthService {
           provider: dto.provider,
           providerUserId: dto.providerUserId,
           profile_image: dto.profile_image,
-        },
-        include: {
-          collegeStudent: {
-            select: {
-              current_year: true,
-              course: {
-                select: {
-                  name: true,
-                  school: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
         },
       });
 
@@ -162,25 +114,7 @@ export class AuthService {
       where: {
         email: dto.email,
       },
-      include: {
-        collegeStudent: {
-          select: {
-            current_year: true,
-            course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
     });
-
     if (user.provider && user.providerUserId)
       throw new UnauthorizedException('wrong credentials ');
     console.log(

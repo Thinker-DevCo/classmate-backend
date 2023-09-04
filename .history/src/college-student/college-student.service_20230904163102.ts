@@ -17,11 +17,10 @@ export class CollegeStudentService {
     private readonly redis: RedisService,
   ) {}
 
-  async storeInfo(userId: string, dto: CollegeStudentDTO) {
+  async storeInfo(dto: CollegeStudentDTO) {
     try {
       const student = await this.prisma.collegeStudentInfo.create({
         data: {
-          userId: userId,
           ...dto,
         },
       });
