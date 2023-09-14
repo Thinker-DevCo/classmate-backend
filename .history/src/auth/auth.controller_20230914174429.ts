@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -44,7 +45,7 @@ export class AuthController {
     return this.authService.logout(userid);
   }
   @UseGuards(RtGuard)
-  @Post('refresh')
+  @Get('refresh')
   @HttpCode(HttpStatus.OK)
   refreshTokens(
     @GetCurrentUserId() userId: string,

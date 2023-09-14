@@ -20,6 +20,19 @@ export class CollegeStudentService {
   async storeInfo(userId: string, dto: CollegeStudentDTO) {
     try {
       const student = await this.prisma.collegeStudentInfo.create({
+        select: {
+          current_year: true,
+          course: {
+            select: {
+              name: true,
+              school: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
         data: {
           userId: userId,
           ...dto,

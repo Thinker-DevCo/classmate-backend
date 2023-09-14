@@ -232,7 +232,17 @@ export class AuthService {
 
     const rtMatches = await this.comparehashTokens(rt, user.hashedRt);
 
-    if (!rtMatches) throw new ForbiddenException('Access denied');
+    if (!rtMatches) {
+      await this.prisma.user.update({
+        data: {
+          hashedRt: null,
+        },
+        where: {
+          id: user.id,
+        },
+      });
+      throw new ForbiddenException('Access denied');
+    }
 
     const tokens = await this.getTokens(user.id, user.email);
 
