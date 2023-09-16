@@ -17,7 +17,7 @@ import { UpdateUserFavoriteSubjectDto } from './dto/update-user-favorite-subject
 import { AtGuard } from 'src/common/guards';
 import { GetCurrentUserId } from 'src/common/decorators';
 
-@Controller({ path: 'user-favorite-subject', version: '1' })
+@Controller({ path: 'v1', version: '1' })
 export class UserFavoriteSubjectController {
   constructor(
     private readonly userFavoriteSubjectService: UserFavoriteSubjectService,
@@ -28,7 +28,7 @@ export class UserFavoriteSubjectController {
   create(@GetCurrentUserId() userId: string, @Param('id') subjectId: string) {
     return this.userFavoriteSubjectService.create(userId, subjectId);
   }
-  @UseGuards(AtGuard)
+
   @Get('getfavoritesubjects')
   findAll(@GetCurrentUserId() userId: string) {
     return this.userFavoriteSubjectService.findAll(userId);
