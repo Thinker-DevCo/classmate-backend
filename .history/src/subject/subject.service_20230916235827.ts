@@ -56,31 +56,20 @@ export class SubjectService {
     });
     if (!subjects)
       throw new NotFoundException('could not find any subject in the database');
-    await this.redis.set('subjects', JSON.stringify(subjects), 'EX', 15);
+    await this.redis.set('subjects ', JSON.stringify(subjects), 'EX', 15);
     return subjects;
   }
-  async filterbycourseandyear(userId: string) {
-    const user = await this.prisma.collegeStudentInfo.findUnique({
-      where: { userId: userId },
-    });
-    if (!user) throw new NotFoundException('user does not have college info');
-    const year = user.current_year;
-    const course = user.courseId;
+  async filterbycourseandyear(year: number, course: string) {
+    const cachedSubjects = await this.redis.get('ftbycourseandyearsubjects');
+    if (cachedSubjects) return JSON.parse(cachedSubjects);
     const subjects = await this.prisma.subject.findMany({
       where: {
-        AND: [
+        OR: [
           {
-            OR: [
-              {
-                semester: year * 2,
-              },
-              {
-                semester: year * 2 - 1,
-              },
-            ],
+            semester: year * 2,
           },
           {
-            courseId: course,
+            semester: year * 2 - 1,
           },
         ],
       },
@@ -90,7 +79,7 @@ export class SubjectService {
     });
     if (!subjects)
       throw new NotFoundException('could not find any subject in the database');
-
+    await this.redis.set('subjects ', JSON.stringify(subjects), 'EX', 15);
     return subjects;
   }
   async findOne(id: string) {
@@ -110,20 +99,6 @@ export class SubjectService {
     return subject;
   }
 
-  async findbycourse(userId: string) {
-    const user = await this.prisma.collegeStudentInfo.findUnique({
-      where: { userId: userId },
-    });
-    if (!user) throw new NotFoundException('user does not have college info');
-    const subjects = await this.prisma.subject.findMany({
-      where: {
-        courseId: user.courseId,
-      },
-    });
-    if (!subjects)
-      throw new NotFoundException('subject was not found in the database');
-    return subjects;
-  }
   async update(id: string, dto: UpdateSubjectDto) {
     try {
       const updatedSubject = await this.prisma.subject.update({

@@ -122,7 +122,6 @@ export class SubjectService {
     });
     if (!subjects)
       throw new NotFoundException('subject was not found in the database');
-    return subjects;
   }
   async update(id: string, dto: UpdateSubjectDto) {
     try {

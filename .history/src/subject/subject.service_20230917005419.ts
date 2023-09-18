@@ -59,13 +59,12 @@ export class SubjectService {
     await this.redis.set('subjects', JSON.stringify(subjects), 'EX', 15);
     return subjects;
   }
-  async filterbycourseandyear(userId: string) {
+  async filterbycourseandyear(userId: string, course: string) {
     const user = await this.prisma.collegeStudentInfo.findUnique({
       where: { userId: userId },
     });
     if (!user) throw new NotFoundException('user does not have college info');
     const year = user.current_year;
-    const course = user.courseId;
     const subjects = await this.prisma.subject.findMany({
       where: {
         AND: [
@@ -110,20 +109,6 @@ export class SubjectService {
     return subject;
   }
 
-  async findbycourse(userId: string) {
-    const user = await this.prisma.collegeStudentInfo.findUnique({
-      where: { userId: userId },
-    });
-    if (!user) throw new NotFoundException('user does not have college info');
-    const subjects = await this.prisma.subject.findMany({
-      where: {
-        courseId: user.courseId,
-      },
-    });
-    if (!subjects)
-      throw new NotFoundException('subject was not found in the database');
-    return subjects;
-  }
   async update(id: string, dto: UpdateSubjectDto) {
     try {
       const updatedSubject = await this.prisma.subject.update({

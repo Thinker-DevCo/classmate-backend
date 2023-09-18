@@ -110,20 +110,6 @@ export class SubjectService {
     return subject;
   }
 
-  async findbycourse(userId: string) {
-    const user = await this.prisma.collegeStudentInfo.findUnique({
-      where: { userId: userId },
-    });
-    if (!user) throw new NotFoundException('user does not have college info');
-    const subjects = await this.prisma.subject.findMany({
-      where: {
-        courseId: user.courseId,
-      },
-    });
-    if (!subjects)
-      throw new NotFoundException('subject was not found in the database');
-    return subjects;
-  }
   async update(id: string, dto: UpdateSubjectDto) {
     try {
       const updatedSubject = await this.prisma.subject.update({

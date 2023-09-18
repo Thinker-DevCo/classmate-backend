@@ -42,8 +42,7 @@ export class SubjectController {
   @UseGuards(AtGuard)
   @Get('findbycourse')
   findbycourse(@GetCurrentUserId() userId: string) {
-    return this.subjectService.findbycourse(userId);
-  }
+    return; this.subjectService.findbycourse(userId)
 
   @Patch('updatesubject/id=:id')
   update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {

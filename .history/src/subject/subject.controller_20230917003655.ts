@@ -7,13 +7,10 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
-import { AtGuard } from 'src/common/guards';
-import { GetCurrentUserId } from 'src/common/decorators';
 
 @Controller({ path: 'subject', version: '1' })
 export class SubjectController {
@@ -33,16 +30,12 @@ export class SubjectController {
   findOne(@Param('id') id: string) {
     return this.subjectService.findOne(id);
   }
-  @UseGuards(AtGuard)
   @Get('/filterbycourseandyear')
-  filterbycourseandyear(@GetCurrentUserId() userId: string) {
-    return this.subjectService.filterbycourseandyear(userId);
-  }
-
-  @UseGuards(AtGuard)
-  @Get('findbycourse')
-  findbycourse(@GetCurrentUserId() userId: string) {
-    return this.subjectService.findbycourse(userId);
+  filterbycourseandyear(
+    @Query('year') year: string,
+    @Query('courseId') courseId: string,
+  ) {
+    return this.subjectService.filterbycourseandyear(year, courseId);
   }
 
   @Patch('updatesubject/id=:id')
