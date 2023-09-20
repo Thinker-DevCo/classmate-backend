@@ -12,6 +12,28 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LessonService {
+  private lessonSelect = {
+    id: true,
+    title: true,
+    url: true,
+    subject: {
+      select: {
+        name: true,
+        course: {
+          select: {
+            name: true,
+            school: {
+              select: {
+                logo: true,
+                acronime: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
   constructor(
     private readonly redis: RedisService,
     private prisma: PrismaService,
@@ -40,7 +62,9 @@ export class LessonService {
   async findAll() {
     const cachedClasses = await this.redis.get('lessons');
     if (cachedClasses) return JSON.parse(cachedClasses);
-    const lessons = await this.prisma.lesson.findMany();
+    const lessons = await this.prisma.lesson.findMany({
+      select: this.lessonSelect,
+    });
     if (!lessons) throw new NotFoundException('Could not find any lessons');
     await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);
     return lessons;
@@ -73,7 +97,7 @@ export class LessonService {
       return lesson;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('could not update the leesson information');
+      throw new BadRequestException('could not update the lesson information');
     }
   }
 
@@ -90,7 +114,7 @@ export class LessonService {
       return message;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('could not delete the leesson information');
+      throw new BadRequestException('could not delete the lesson information');
     }
   }
 }

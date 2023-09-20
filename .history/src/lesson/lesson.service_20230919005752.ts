@@ -42,6 +42,7 @@ export class LessonService {
     if (cachedClasses) return JSON.parse(cachedClasses);
     const lessons = await this.prisma.lesson.findMany({
       select: {
+        id: true,
         title: true,
         url: true,
         subject: {
@@ -52,7 +53,8 @@ export class LessonService {
                 name: true,
                 school: {
                   select: {
-                    acronime: ture,
+                    logo: true,
+                    acronime: true,
                   },
                 },
               },
@@ -112,5 +114,63 @@ export class LessonService {
       console.log(err);
       throw new BadRequestException('could not delete the lesson information');
     }
+  }
+
+  async filterByCourseSimilars(userId: string, quantity: number) {
+    const user = await this.prisma.collegeStudentInfo.findUnique({
+      select: {
+        course: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        userId: userId,
+      },
+    });
+    if (!user) return this.findAll();
+    const relation = user.course.name.split(' ');
+    const lessons = await this.prisma.lesson.findMany({
+      select: {
+        id: true,
+        title: true,
+        url: true,
+        subject: {
+          select: {
+            name: true,
+            course: {
+              select: {
+                name: true,
+                school: {
+                  select: {
+                    logo: true,
+                    acronime: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      where: {
+        subject: {
+          course: {
+            OR: relation.map((word) => ({
+              name: {
+                contains: word,
+              },
+            })),
+          },
+        },
+      },
+      orderBy: {
+        createAt: 'desc',
+      },
+      take: quantity,
+    });
+    if (!lessons)
+      throw new NotFoundException('There are no assessments on the database');
+    return lessons;
   }
 }

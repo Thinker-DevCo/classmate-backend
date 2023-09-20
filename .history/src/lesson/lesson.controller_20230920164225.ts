@@ -6,12 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { AtGuard } from 'src/common/guards';
+import { GetCurrentUserId } from 'src/common/decorators';
 
-@Controller('classes')
+@Controller({ version: '1', path: 'lessons' })
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
@@ -20,7 +24,7 @@ export class LessonController {
     return this.lessonService.create(createClassDto);
   }
 
-  @Get()
+  @Get('/getalllessons')
   findAll() {
     return this.lessonService.findAll();
   }

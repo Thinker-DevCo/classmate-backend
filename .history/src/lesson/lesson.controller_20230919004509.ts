@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { AtGuard } from 'src/common/guards';
+import { GetCurrentUserId } from 'src/common/decorators';
 
 @Controller({ version: '1', path: 'lessons' })
 export class LessonController {
@@ -38,5 +42,14 @@ export class LessonController {
   @Delete('/deletelesson/id=:id')
   remove(@Param('id') id: string) {
     return this.lessonService.remove(id);
+  }
+
+  @UseGuards(AtGuard)
+  @Get('/findbysimilars')
+  findBySimilars(
+    @Query('take') take: string,
+    @GetCurrentUserId() userId: string,
+  ) {
+    return this.lessonService.filterByCourseSimilars(userId, +take);
   }
 }

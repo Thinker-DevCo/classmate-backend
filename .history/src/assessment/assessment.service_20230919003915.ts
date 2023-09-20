@@ -158,7 +158,7 @@ export class AssessmentService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createAt: 'desc',
       },
     });
     if (!assessments)

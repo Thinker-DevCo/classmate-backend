@@ -12,6 +12,28 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LessonService {
+  private lessonSelect = {
+    id: true,
+    title: true,
+    url: true,
+    subject: {
+      select: {
+        name: true,
+        course: {
+          select: {
+            name: true,
+            school: {
+              select: {
+                logo: true,
+                acronime: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
   constructor(
     private readonly redis: RedisService,
     private prisma: PrismaService,
@@ -41,25 +63,7 @@ export class LessonService {
     const cachedClasses = await this.redis.get('lessons');
     if (cachedClasses) return JSON.parse(cachedClasses);
     const lessons = await this.prisma.lesson.findMany({
-      select: {
-        title: true,
-        url: true,
-        subject: {
-          select: {
-            name: true,
-            course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    acronime: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      select: this.lessonSelect,
     });
     if (!lessons) throw new NotFoundException('Could not find any lessons');
     await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);
@@ -112,5 +116,67 @@ export class LessonService {
       console.log(err);
       throw new BadRequestException('could not delete the lesson information');
     }
+  }
+
+  async filterByCourseSimilars(userId: string, quantity: number) {
+    const user = await this.prisma.collegeStudentInfo.findUnique({
+      select: {
+        course: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        userId: userId,
+      },
+    });
+    if (!user) return this.findAll();
+    const relation = user.course.name.split(' ');
+    const lessons = await this.prisma.lesson.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            OR: relation.map((word) => ({
+              name: {
+                contains: word,
+              },
+            })),
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: quantity,
+    });
+
+    if (!lessons)
+      throw new NotFoundException('There are no assessments on the database');
+    return lessons;
+  }
+
+  async findDocumentByCourseName(course: string) {
+    const lessons = await this.prisma.lesson.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            name: course,
+          },
+        },
+      },
+    });
+    const assessments = await this.prisma.assessment.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            name: course,
+          },
+        },
+      },
+    });
   }
 }

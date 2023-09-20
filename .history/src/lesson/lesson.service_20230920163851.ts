@@ -12,6 +12,28 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LessonService {
+  private lessonSelect = {
+    id: true,
+    title: true,
+    url: true,
+    subject: {
+      select: {
+        name: true,
+        course: {
+          select: {
+            name: true,
+            school: {
+              select: {
+                logo: true,
+                acronime: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
   constructor(
     private readonly redis: RedisService,
     private prisma: PrismaService,
@@ -41,26 +63,7 @@ export class LessonService {
     const cachedClasses = await this.redis.get('lessons');
     if (cachedClasses) return JSON.parse(cachedClasses);
     const lessons = await this.prisma.lesson.findMany({
-      select: {
-        title: true,
-        url: true,
-        subject: {
-          select: {
-            name: true,
-            course: {
-              select: {
-                name: true,
-                school: {
-                  select: {
-                    logo: true
-                    acronime: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      select: this.lessonSelect,
     });
     if (!lessons) throw new NotFoundException('Could not find any lessons');
     await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);
