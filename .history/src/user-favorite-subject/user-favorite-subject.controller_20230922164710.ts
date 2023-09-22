@@ -16,7 +16,6 @@ import { CreateUserFavoriteSubjectDto } from './dto/create-user-favorite-subject
 import { UpdateUserFavoriteSubjectDto } from './dto/update-user-favorite-subject.dto';
 import { AtGuard } from 'src/common/guards';
 import { GetCurrentUserId } from 'src/common/decorators';
-import { Subject } from 'rxjs';
 
 @Controller({ path: 'user-favorite-subject', version: '1' })
 export class UserFavoriteSubjectController {
@@ -26,18 +25,19 @@ export class UserFavoriteSubjectController {
 
   @Post('storefavoritesubject/id=:id')
   @UseGuards(AtGuard)
-  create(@GetCurrentUserId() userId: string, @Param('id') subjectId: string) {
-    return this.userFavoriteSubjectService.create(userId, subjectId);
-  }
-  @Post('/storemanyfavoritesubject')
-  @UseGuards(AtGuard)
-  createMany(
+  create(
     @GetCurrentUserId() userId: string,
     @Body() dto: CreateUserFavoriteSubjectDto,
   ) {
+    return this.userFavoriteSubjectService.create(userId, dto.subjectId);
+  }
+  @Post('storemanyfavoritesubject/id=:id')
+  @UseGuards(AtGuard)
+  createMany(@GetCurrentUserId() userId: string, @Body() dto: string[]) {
     return this.userFavoriteSubjectService.createMany(userId, dto);
   }
 
+  @Post('/')
   @UseGuards(AtGuard)
   @Get('getfavoritesubjects')
   findAll(@GetCurrentUserId() userId: string) {

@@ -48,9 +48,9 @@ export class UserFavoriteSubjectService {
     }
   }
 
-  async createMany(userId: string, dto: CreateUserFavoriteSubjectDto) {
+  async createMany(userId: string, subjectIds: string[]) {
     try {
-      const data = dto.subjectId.map((subjectId) => ({
+      const data = subjectIds.map((subjectId) => ({
         userId: userId,
         subjectId: subjectId,
       }));

@@ -29,7 +29,7 @@ export class UserFavoriteSubjectController {
   create(@GetCurrentUserId() userId: string, @Param('id') subjectId: string) {
     return this.userFavoriteSubjectService.create(userId, subjectId);
   }
-  @Post('/storemanyfavoritesubject')
+  @Post('storemanyfavoritesubject/id=:id')
   @UseGuards(AtGuard)
   createMany(
     @GetCurrentUserId() userId: string,
@@ -38,6 +38,7 @@ export class UserFavoriteSubjectController {
     return this.userFavoriteSubjectService.createMany(userId, dto);
   }
 
+  @Post('/')
   @UseGuards(AtGuard)
   @Get('getfavoritesubjects')
   findAll(@GetCurrentUserId() userId: string) {
