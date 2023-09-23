@@ -130,21 +130,21 @@ export class AssessmentService {
     await this.redis.set('assessments', JSON.stringify(assessments), 'EX', 15);
     return assessments;
   }
-//   async filterByCourseSimilars(userId: string){
-//     const user = await this.prisma.collegeStudentInfo.findUnique({
-//       where: {
-//         userId: userId
-//       }
-//     })
-//     if(!user) return this.queryAssessments()
-//     const assessments = await this.prisma.assessment.findMany({
-//       where: {
-//         subject: {
-//           course: {
-//             name: user.courseId
-//           }
-//         }
-//       }
-//     })
-//   }
-// }
+  //   async filterByCourseSimilars(userId: string){
+  //     const user = await this.prisma.collegeStudentInfo.findUnique({
+  //       where: {
+  //         userId: userId
+  //       }
+  //     })
+  //     if(!user) return this.queryAssessments()
+  //     const assessments = await this.prisma.assessment.findMany({
+  //       where: {
+  //         subject: {
+  //           course: {
+  //             name: user.courseId
+  //           }
+  //         }
+  //       }
+  //     })
+  //   }
+}
