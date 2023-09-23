@@ -144,25 +144,14 @@ export class AssessmentService {
       },
     });
     if (!user) return this.queryAssessments();
-    const relation = user.course.name.split(' ');
     const assessments = await this.prisma.assessment.findMany({
       where: {
         subject: {
           course: {
-            OR: relation.map((word) => ({
-              name: {
-                contains: word,
-              },
-            })),
+            name: user.courseId,
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
     });
-    if (!assessments)
-      throw new NotFoundException('There are no assessments on the database');
-    return assessments;
   }
 }

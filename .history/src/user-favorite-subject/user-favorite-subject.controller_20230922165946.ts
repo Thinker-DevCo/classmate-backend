@@ -38,6 +38,7 @@ export class UserFavoriteSubjectController {
     return this.userFavoriteSubjectService.createMany(userId, dto);
   }
 
+=
   @UseGuards(AtGuard)
   @Get('getfavoritesubjects')
   findAll(@GetCurrentUserId() userId: string) {

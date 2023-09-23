@@ -158,11 +158,8 @@ export class AssessmentService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createAt: 'desc',
       },
     });
-    if (!assessments)
-      throw new NotFoundException('There are no assessments on the database');
-    return assessments;
   }
 }

@@ -130,39 +130,21 @@ export class AssessmentService {
     await this.redis.set('assessments', JSON.stringify(assessments), 'EX', 15);
     return assessments;
   }
-  async filterByCourseSimilars(userId: string) {
-    const user = await this.prisma.collegeStudentInfo.findUnique({
-      select: {
-        course: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      where: {
-        userId: userId,
-      },
-    });
-    if (!user) return this.queryAssessments();
-    const relation = user.course.name.split(' ');
-    const assessments = await this.prisma.assessment.findMany({
-      where: {
-        subject: {
-          course: {
-            OR: relation.map((word) => ({
-              name: {
-                contains: word,
-              },
-            })),
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-    if (!assessments)
-      throw new NotFoundException('There are no assessments on the database');
-    return assessments;
-  }
+  // async filterByCourseSimilars(userId: string){
+  //   const user = await this.prisma.collegeStudentInfo.findUnique({
+  //     where: {
+  //       userId: userId
+  //     }
+  //   })
+  //   if(!user) return this.queryAssessments()
+  //   const assessments = await this.prisma.assessment.findMany({
+  //     where: {
+  //       subject: {
+  //         course: {
+  //           name: user.courseId
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 }

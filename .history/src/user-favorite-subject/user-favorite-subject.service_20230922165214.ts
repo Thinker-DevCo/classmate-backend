@@ -58,7 +58,7 @@ export class UserFavoriteSubjectService {
       const favorites = await this.prisma.userFavoriteSubject.createMany({
         data,
       });
-      return { message: `added ${favorites} subjects to the database` };
+      return favorites;
     } catch (err) {
       if (err.code instanceof Prisma.PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {

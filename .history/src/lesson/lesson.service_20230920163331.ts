@@ -117,4 +117,84 @@ export class LessonService {
       throw new BadRequestException('could not delete the lesson information');
     }
   }
+
+  async filterByCourseSimilars(userId: string, quantity: number) {
+    const user = await this.prisma.collegeStudentInfo.findUnique({
+      select: {
+        course: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        userId: userId,
+      },
+    });
+    if (!user) return this.findAll();
+    const relation = user.course.name.split(' ');
+    const lessons = await this.prisma.lesson.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            OR: relation.map((word) => ({
+              name: {
+                contains: word,
+              },
+            })),
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: quantity,
+    });
+
+    if (!lessons)
+      throw new NotFoundException('There are no assessments on the database');
+    return lessons;
+  }
+
+  async findDocumentByCourseName(course: string) {
+    const lessons = await this.prisma.lesson.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            name: {
+              contains: course,
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    const assessments = await this.prisma.assessment.findMany({
+      select: this.lessonSelect,
+      where: {
+        subject: {
+          course: {
+            name: {
+              contains: course,
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (lessons && assessments) return [...lessons, ...assessments];
+
+    if (!lessons && assessments) return assessments;
+
+    if (lessons && !assessments) return assessments;
+
+    throw new NotFoundException('There are no documents on the database');
+  }
 }

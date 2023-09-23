@@ -43,4 +43,13 @@ export class LessonController {
   remove(@Param('id') id: string) {
     return this.lessonService.remove(id);
   }
+
+  @UseGuards(AtGuard)
+  @Get('/findbysimilars')
+  findBySimilars(
+    @Query('take') take: string,
+    @GetCurrentUserId() userId: string,
+  ) {
+    return this.lessonService.filterByCourseSimilars(userId, +take);
+  }
 }

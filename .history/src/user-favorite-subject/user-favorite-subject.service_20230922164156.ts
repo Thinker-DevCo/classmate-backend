@@ -48,9 +48,9 @@ export class UserFavoriteSubjectService {
     }
   }
 
-  async createMany(userId: string, dto: CreateUserFavoriteSubjectDto) {
+  async createMany(userId: string, subjectIds: string[]) {
     try {
-      const data = dto.subjectId.map((subjectId) => ({
+      const data = subjectIds.map((subjectId) => ({
         userId: userId,
         subjectId: subjectId,
       }));
@@ -58,7 +58,7 @@ export class UserFavoriteSubjectService {
       const favorites = await this.prisma.userFavoriteSubject.createMany({
         data,
       });
-      return { message: `added ${favorites} subjects to the database` };
+      return favorites;
     } catch (err) {
       if (err.code instanceof Prisma.PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
