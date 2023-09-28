@@ -9,47 +9,7 @@ export class RedisService {
   private readonly subClient: Redis;
   // private schoolGateway: SchoolGateway;
   private readonly subscribers: { [channel: string]: Server[] } = {};
-  constructor() {
-    this.cacheClient = new Redis(process.env.REDIS_URL);
-    this.pubClient = new Redis(process.env.REDIS_URL);
-    this.subClient = new Redis(process.env.REDIS_URL);
-
-    this.cacheClient.on('error', (err) => {
-      console.log('Error on Redis cache client');
-      console.log(err);
-      process.exit(1);
-    });
-
-    this.pubClient.on('error', (err) => {
-      console.log('Error on Redis Pub/Sub client');
-      console.log(err);
-      process.exit(1);
-    });
-    this.subClient.on('error', (err) => {
-      console.log('Error on Redis Pub/Sub client');
-      console.log(err);
-      process.exit(1);
-    });
-
-    this.cacheClient.on('connect', () => {
-      console.log('Redis cache client connected');
-    });
-
-    this.pubClient.on('connect', () => {
-      console.log('Redis Pub/Sub client connected');
-    });
-    this.subClient.on('connect', () => {
-      console.log('Redis Pub/Sub client connected');
-    });
-
-    this.subClient.on('message', (channel: string, message: string) => {
-      if (this.subscribers[channel]) {
-        for (const server of this.subscribers[channel]) {
-          server.emit(channel, message);
-        }
-      }
-    });
-  }
+  constructor() {}
 
   // Redis caching methods
 
@@ -89,13 +49,5 @@ export class RedisService {
         }
       }
     }
-  }
-
-  on(channel: string, callback: (channel: string, message: string) => void) {
-    this.subClient.on('message', (receivedChannel: string, message: string) => {
-      if (channel === receivedChannel) {
-        callback(receivedChannel, message);
-      }
-    });
   }
 }

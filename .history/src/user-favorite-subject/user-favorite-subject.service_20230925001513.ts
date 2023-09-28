@@ -55,17 +55,9 @@ export class UserFavoriteSubjectService {
         subjectId: subjectId,
       }));
 
-      await this.prisma.userFavoriteSubject.createMany({
+      const favorites = await this.prisma.userFavoriteSubject.createMany({
         skipDuplicates: true,
         data: data,
-      });
-      const favorites = await this.prisma.userFavoriteSubject.findMany({
-        include: {
-          subject: true,
-        },
-        where: {
-          userId: userId,
-        },
       });
       return favorites;
     } catch (err) {

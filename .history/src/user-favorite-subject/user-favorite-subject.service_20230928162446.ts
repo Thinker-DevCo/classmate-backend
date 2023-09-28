@@ -60,9 +60,6 @@ export class UserFavoriteSubjectService {
         data: data,
       });
       const favorites = await this.prisma.userFavoriteSubject.findMany({
-        include: {
-          subject: true,
-        },
         where: {
           userId: userId,
         },
