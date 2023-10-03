@@ -16,19 +16,29 @@ import { CreateUserFavoriteSubjectDto } from './dto/create-user-favorite-subject
 import { UpdateUserFavoriteSubjectDto } from './dto/update-user-favorite-subject.dto';
 import { AtGuard } from 'src/common/guards';
 import { GetCurrentUserId } from 'src/common/decorators';
+import { Subject } from 'rxjs';
 
-@Controller('user-favorite-subject')
+@Controller({ path: 'user-favorite-subject', version: '1' })
 export class UserFavoriteSubjectController {
   constructor(
     private readonly userFavoriteSubjectService: UserFavoriteSubjectService,
   ) {}
 
-  @Post('/favoritesubject/store/id=:id')
+  @Post('storefavoritesubject/id=:id')
   @UseGuards(AtGuard)
   create(@GetCurrentUserId() userId: string, @Param('id') subjectId: string) {
     return this.userFavoriteSubjectService.create(userId, subjectId);
   }
+  @Post('/storemanyfavoritesubject')
+  @UseGuards(AtGuard)
+  createMany(
+    @GetCurrentUserId() userId: string,
+    @Body() dto: CreateUserFavoriteSubjectDto,
+  ) {
+    return this.userFavoriteSubjectService.createMany(userId, dto);
+  }
 
+  @UseGuards(AtGuard)
   @Get('getfavoritesubjects')
   findAll(@GetCurrentUserId() userId: string) {
     return this.userFavoriteSubjectService.findAll(userId);
@@ -40,11 +50,12 @@ export class UserFavoriteSubjectController {
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @Delete('/deleteFavorite/')
+  @UseGuards(AtGuard)
+  @Post('/deletemany')
   remove(
     @GetCurrentUserId() userId: string,
-    @Query('subjectId') subjectId: string,
+    @Body() dto: CreateUserFavoriteSubjectDto,
   ) {
-    return this.userFavoriteSubjectService.remove(userId, subjectId);
+    return this.userFavoriteSubjectService.removeMany(userId, dto);
   }
 }

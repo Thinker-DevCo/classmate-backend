@@ -50,11 +50,12 @@ export class UserFavoriteSubjectController {
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @Delete('/deleteFavorite/')
+  @UseGuards(AtGuard)
+  @Post('/deletemany')
   remove(
     @GetCurrentUserId() userId: string,
-    @Query('subjectId') subjectId: string,
+    @Body() dto: CreateUserFavoriteSubjectDto,
   ) {
-    return this.userFavoriteSubjectService.remove(userId, subjectId);
+    return this.userFavoriteSubjectService.removeMany(userId, dto);
   }
 }

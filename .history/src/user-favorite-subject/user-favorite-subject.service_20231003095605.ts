@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ForbiddenException,
+  HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -46,6 +48,39 @@ export class UserFavoriteSubjectService {
     }
   }
 
+  async createMany(userId: string, dto: CreateUserFavoriteSubjectDto) {
+    try {
+      const data = dto.subjectId.map((subjectId) => ({
+        userId: userId,
+        subjectId: subjectId,
+      }));
+
+      await this.prisma.userFavoriteSubject.createMany({
+        skipDuplicates: true,
+        data: data,
+      });
+      const favorites = await this.prisma.userFavoriteSubject.findMany({
+        include: {
+          subject: true,
+        },
+        where: {
+          userId: userId,
+        },
+      });
+      return favorites;
+    } catch (err) {
+      if (err.code instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          throw new ForbiddenException(
+            'subject is already exists in the database',
+          );
+        }
+      }
+      console.log(err);
+      throw new ForbiddenException('Could not create school');
+    }
+  }
+
   async findAll(userid: string) {
     const cachedfavorites = await this.redis.get('favorites');
     if (cachedfavorites) return JSON.parse(cachedfavorites);
@@ -69,27 +104,45 @@ export class UserFavoriteSubjectService {
     return `This action returns a #${id} userFavoriteSubject`;
   }
 
-  update(
-    id: number,
-    updateUserFavoriteSubjectDto: UpdateUserFavoriteSubjectDto,
-  ) {
-    return `This action updates a #${id} userFavoriteSubject`;
-  }
-
-  async remove(userId: string, subjectID: string) {
+  async remove(userId: string, subjectId: string) {
     try {
       await this.prisma.userFavoriteSubject.delete({
         where: {
-          AND: [
-            {
-              subjectId: subjectID,
-            },
-            {
-              userId: userId,
-            },
-          ],
+          userId_subjectId: {
+            userId: userId,
+            subjectId: subjectId,
+          },
         },
       });
-    } catch (error) {}
+      const message = { message: 'subject remove from favorite' };
+
+      return message;
+    } catch (error) {
+      throw new BadRequestException('Could not remove subject from favorite');
+    }
+  }
+
+  async removeMany(userId: string, dto: CreateUserFavoriteSubjectDto) {
+    try {
+      await this.prisma.userFavoriteSubject.deleteMany({
+        where: {
+          userId: userId,
+          subjectId: {
+            in: dto.subjectId,
+          },
+        },
+      });
+      const favorites = await this.prisma.userFavoriteSubject.findMany({
+        include: {
+          subject: true,
+        },
+        where: {
+          userId: userId,
+        },
+      });
+      return favorites;
+    } catch (err) {
+      throw new BadRequestException('Could not remove subject from favorite');
+    }
   }
 }

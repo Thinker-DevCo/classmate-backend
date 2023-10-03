@@ -7,28 +7,41 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserFavoriteSubjectService } from './user-favorite-subject.service';
 import { CreateUserFavoriteSubjectDto } from './dto/create-user-favorite-subject.dto';
 import { UpdateUserFavoriteSubjectDto } from './dto/update-user-favorite-subject.dto';
 import { AtGuard } from 'src/common/guards';
 import { GetCurrentUserId } from 'src/common/decorators';
+import { Subject } from 'rxjs';
 
-@Controller('user-favorite-subject')
+@Controller({ path: 'user-favorite-subject', version: '1' })
 export class UserFavoriteSubjectController {
   constructor(
     private readonly userFavoriteSubjectService: UserFavoriteSubjectService,
   ) {}
 
-  @Post('/favoritesubject/store/id=:id')
+  @Post('storefavoritesubject/id=:id')
   @UseGuards(AtGuard)
   create(@GetCurrentUserId() userId: string, @Param('id') subjectId: string) {
     return this.userFavoriteSubjectService.create(userId, subjectId);
   }
+  @Post('/storemanyfavoritesubject')
+  @UseGuards(AtGuard)
+  createMany(
+    @GetCurrentUserId() userId: string,
+    @Body() dto: CreateUserFavoriteSubjectDto,
+  ) {
+    return this.userFavoriteSubjectService.createMany(userId, dto);
+  }
 
-  @Get()
-  findAll() {
-    return this.userFavoriteSubjectService.findAll();
+  @UseGuards(AtGuard)
+  @Get('getfavoritesubjects')
+  findAll(@GetCurrentUserId() userId: string) {
+    return this.userFavoriteSubjectService.findAll(userId);
   }
 
   @Get(':id')
@@ -36,19 +49,12 @@ export class UserFavoriteSubjectController {
     return this.userFavoriteSubjectService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserFavoriteSubjectDto: UpdateUserFavoriteSubjectDto,
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Delete('/deletemany')
+  remove(
+    @GetCurrentUserId() userId: string,
+    @Body() dto: CreateUserFavoriteSubjectDto,
   ) {
-    return this.userFavoriteSubjectService.update(
-      +id,
-      updateUserFavoriteSubjectDto,
-    );
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userFavoriteSubjectService.remove(+id);
+    return this.userFavoriteSubjectService.removeMany(userId, dto);
   }
 }
