@@ -50,8 +50,7 @@ export class UserFavoriteSubjectController {
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @UseGuards(AtGuard)
-  @Post('/deletemany')
+  @Delete('/deletemany/')
   remove(
     @GetCurrentUserId() userId: string,
     @Body() dto: CreateUserFavoriteSubjectDto,

@@ -60,9 +60,6 @@ export class UserFavoriteSubjectService {
         data: data,
       });
       const favorites = await this.prisma.userFavoriteSubject.findMany({
-        include: {
-          subject: true,
-        },
         where: {
           userId: userId,
         },
@@ -118,30 +115,6 @@ export class UserFavoriteSubjectService {
 
       return message;
     } catch (error) {
-      throw new BadRequestException('Could not remove subject from favorite');
-    }
-  }
-
-  async removeMany(userId: string, dto: CreateUserFavoriteSubjectDto) {
-    try {
-      await this.prisma.userFavoriteSubject.deleteMany({
-        where: {
-          userId: userId,
-          subjectId: {
-            in: dto.subjectId,
-          },
-        },
-      });
-      const favorites = await this.prisma.userFavoriteSubject.findMany({
-        include: {
-          subject: true,
-        },
-        where: {
-          userId: userId,
-        },
-      });
-      return favorites;
-    } catch (err) {
       throw new BadRequestException('Could not remove subject from favorite');
     }
   }

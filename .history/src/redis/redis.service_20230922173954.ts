@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
-
+import { SchoolGateway } from 'src/school/school.gateway';
 import { Server } from 'socket.io';
 @Injectable()
 export class RedisService {
@@ -9,9 +9,7 @@ export class RedisService {
   private readonly subClient: Redis;
   // private schoolGateway: SchoolGateway;
   private readonly subscribers: { [channel: string]: Server[] } = {};
-  constructor() {
-    this.cacheClient = new Redis(process.env.REDIS_URL);
-  }
+  constructor() {}
 
   // Redis caching methods
 
