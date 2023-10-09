@@ -9,7 +9,6 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { documentsTypes } from 'src/user-favorite-documents/@types/document';
 
 @Injectable()
 export class LessonService {
@@ -34,15 +33,7 @@ export class LessonService {
       },
     },
   };
-  extractDocumentFields = (document: documentsTypes) => ({
-    id: document.id,
-    title: document.title,
-    url: document.url,
-    subject_name: document.subject.name,
-    course_name: document.subject.course.name,
-    school_acronime: document.subject.course.school.acronime,
-    school_logo: document.subject.course.school.logo,
-  });
+
   constructor(
     private readonly redis: RedisService,
     private prisma: PrismaService,
@@ -77,7 +68,7 @@ export class LessonService {
 
     if (!lessons) throw new NotFoundException('Could not find any lessons');
     await this.redis.set('lessons', JSON.stringify(lessons), 'EX', 15);
-    return lessons.map((item) => this.extractDocumentFields(item));
+    return lessons;
   }
 
   async findOne(id: string) {
