@@ -138,10 +138,10 @@ model UserFavoriteLesson {
 model UserFavoriteAssessment {
   user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String
-  Assessment  Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
-  assessment_id String
+  Assessment  Assessment @relation(fields: [Assessment_id], references: [id], onDelete: Cascade)
+  Assessment_id String
   createdAt DateTime @default(now())
-  @@id([user_id, assessment_id])
+  @@id([user_id, Assessment_id])
 }
 
 

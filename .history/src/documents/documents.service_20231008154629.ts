@@ -77,7 +77,7 @@ export class DocumentsService {
 
     if (!lessons)
       throw new NotFoundException('There are no assessments on the database');
-    return lessons.map((item) => this.extractDocumentFields(item));
+    return lessons;
   }
 
   async findDocumentBySubjectName(subject: string, quantity?: number) {
@@ -149,17 +149,11 @@ export class DocumentsService {
       },
       take: quantity,
     });
-    if (lessons && assessments)
-      return [
-        ...lessons.map((item) => this.extractDocumentFields(item)),
-        ...assessments.map((item) => this.extractDocumentFields(item)),
-      ];
+    if (lessons && assessments) return [...lessons, ...assessments];
 
-    if (!lessons && assessments)
-      return assessments.map((item) => this.extractDocumentFields(item));
+    if (!lessons && assessments) return assessments;
 
-    if (lessons && !assessments)
-      return lessons.map((item) => this.extractDocumentFields(item));
+    if (lessons && !assessments) return assessments;
 
     throw new NotFoundException('There are no documents on the database');
   }
