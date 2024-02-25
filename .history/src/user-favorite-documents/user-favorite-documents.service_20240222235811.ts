@@ -121,7 +121,8 @@ export class UserFavoriteDocumentsService {
           throw new ForbiddenException('assessment is already users favorite');
         }
       }
-
+      const ass = await this.prisma.userFavoriteAssessment.findMany();
+      console.log(ass);
       throw new ForbiddenException(
         'Could not add assessment to favorite table',
       );

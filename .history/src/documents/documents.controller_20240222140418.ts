@@ -14,7 +14,7 @@ export class DocumentsController {
   ) {
     return this.documentsService.filterByCourseSimilars(userId, +take);
   }
-  @UseGuards(AtGuard)
+
   @Get('/findbysubject')
   findbysubject(
     @Query('subject') subject: string,
@@ -22,13 +22,12 @@ export class DocumentsController {
   ) {
     return this.documentsService.findDocumentBySubjectName(subject, +take);
   }
-  @UseGuards(AtGuard)
   @Get('/findbylatetstdocument')
   findByLatetstDocument(@Query('take') take: string) {
     return this.documentsService.fetchByLastDocument(+take);
   }
-  @UseGuards(AtGuard)
-  @Get('/findbysubjectid')
+
+  @Get('/findDocumentBySubjectId')
   findBySubjectId(@Query('subject') subject: string) {
     return this.documentsService.findDocumentBySubjectId(subject);
   }

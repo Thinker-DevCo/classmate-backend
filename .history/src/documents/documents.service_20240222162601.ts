@@ -116,7 +116,7 @@ export class DocumentsService {
     });
 
     if (!lessons)
-      throw new NotFoundException('There are no lessons on the database');
+      throw new NotFoundException('There are no assessments on the database');
     return lessons.map((item) => this.extractLessonFields(item));
   }
 
@@ -177,7 +177,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subject: {
           name: {
@@ -221,7 +221,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subjectId: latest.subjectId,
       },

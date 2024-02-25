@@ -304,7 +304,7 @@ export class AuthService {
           email,
           uniqueId: Math.random(),
         },
-        { secret: 'at-secret', expiresIn: 60 * 20 },
+        { secret: 'at-secret', expiresIn: 60 },
       ),
       this.jwt.signAsync(
         {

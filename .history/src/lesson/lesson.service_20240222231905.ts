@@ -44,8 +44,6 @@ export class LessonService {
     course_name: document.subject.course.name,
     school_acronime: document.subject.course.school.acronime,
     school_logo: document.subject.course.school.logo,
-    summary: document.summary,
-    classType: document.classType,
   });
   constructor(
     private readonly redis: RedisService,

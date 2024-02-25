@@ -4,7 +4,6 @@ export type documentsTypes = {
   url: string;
   type?: string;
   year?: number;
-  classType?: string;
   summary?: string;
   period?: string;
   subject: {

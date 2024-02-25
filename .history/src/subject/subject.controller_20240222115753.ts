@@ -44,7 +44,7 @@ export class SubjectController {
   findbyUsercourse(@GetCurrentUserId() userId: string) {
     return this.subjectService.findbyUsercourse(userId);
   }
-  @Get('/findbycourse')
+  @Get('/findbycourseId')
   findbycourse(@Query('course') courseId: string) {
     return this.subjectService.findByCourse(courseId);
   }
