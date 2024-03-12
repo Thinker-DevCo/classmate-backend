@@ -26,7 +26,7 @@ export class UserFavoriteDocumentsController {
   @Post('storelesson')
   createLesson(
     @GetCurrentUserId() user_id: string,
-    @Body('lesson_id') lesson_id: string,
+    @Query('lesson_id') lesson_id: string,
   ) {
     return this.userFavoriteDocementsService.createLesson(user_id, lesson_id);
   }
@@ -34,7 +34,7 @@ export class UserFavoriteDocumentsController {
   @Post('storeAssessment')
   createAssessment(
     @GetCurrentUserId() user_id: string,
-    @Body('assessment_id') assessment_id: string,
+    @Query('assessment_id') assessment_id: string,
   ) {
     return this.userFavoriteDocementsService.createAssessment(
       user_id,
@@ -61,7 +61,7 @@ export class UserFavoriteDocumentsController {
     @GetCurrentUserId() user_id: string,
     @Query('assessment_id') assessment_id: string,
   ) {
-    return this.userFavoriteDocementsService.removeAssessment(
+    return this.userFavoriteDocementsService.removeLesson(
       user_id,
       assessment_id,
     );

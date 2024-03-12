@@ -142,19 +142,6 @@ export class SubjectService {
     }
   }
 
-  async findByCourse(courseId: string) {
-    const subjects = await this.prisma.subject.findMany({
-      where: {
-        courseId: courseId,
-      },
-    });
-    if (!subjects)
-      throw new NotFoundException(
-        'course does not have subjects found in the database',
-      );
-    return subjects;
-  }
-
   async remove(id: string) {
     try {
       await this.prisma.subject.delete({

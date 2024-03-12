@@ -61,7 +61,7 @@ export class UserFavoriteDocumentsController {
     @GetCurrentUserId() user_id: string,
     @Query('assessment_id') assessment_id: string,
   ) {
-    return this.userFavoriteDocementsService.removeAssessment(
+    return this.userFavoriteDocementsService.removeLesson(
       user_id,
       assessment_id,
     );

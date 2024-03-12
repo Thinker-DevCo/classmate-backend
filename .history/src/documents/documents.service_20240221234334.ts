@@ -10,8 +10,6 @@ export class DocumentsService {
     id: true,
     title: true,
     url: true,
-    summary: true,
-    classType: true,
     subject: {
       select: {
         name: true,
@@ -29,31 +27,7 @@ export class DocumentsService {
       },
     },
   };
-  private AssessmentSelect = {
-    id: true,
-    title: true,
-    url: true,
-    type: true,
-    period: true,
-    year: true,
-    subject: {
-      select: {
-        name: true,
-        course: {
-          select: {
-            name: true,
-            school: {
-              select: {
-                logo: true,
-                acronime: true,
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-  extractLessonFields = (document: documentsTypes) => ({
+  extractDocumentFields = (document: documentsTypes) => ({
     id: document.id,
     title: document.title,
     url: document.url,
@@ -61,20 +35,6 @@ export class DocumentsService {
     course_name: document.subject.course.name,
     school_acronime: document.subject.course.school.acronime,
     school_logo: document.subject.course.school.logo,
-    summary: document.summary,
-    classType: document.classType,
-  });
-  extractAssessmentFields = (document: documentsTypes) => ({
-    id: document.id,
-    title: document.title,
-    url: document.url,
-    subject_name: document.subject.name,
-    course_name: document.subject.course.name,
-    school_acronime: document.subject.course.school.acronime,
-    school_logo: document.subject.course.school.logo,
-    type: document.type,
-    year: document.year,
-    period: document.period,
   });
   constructor(
     private readonly redis: RedisService,
@@ -116,8 +76,8 @@ export class DocumentsService {
     });
 
     if (!lessons)
-      throw new NotFoundException('There are no lessons on the database');
-    return lessons.map((item) => this.extractLessonFields(item));
+      throw new NotFoundException('There are no assessments on the database');
+    return lessons.map((item) => this.extractDocumentFields(item));
   }
 
   async findDocumentBySubjectId(subjectId: string, quantity?: number) {
@@ -134,7 +94,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subject: {
           id: subjectId,
@@ -148,15 +108,15 @@ export class DocumentsService {
 
     if (lessons && assessments)
       return [
-        ...lessons.map((item) => this.extractLessonFields(item)),
-        ...assessments.map((item) => this.extractAssessmentFields(item)),
+        ...lessons.map((item) => this.extractDocumentFields(item)),
+        ...assessments.map((item) => this.extractDocumentFields(item)),
       ];
 
     if (!lessons && assessments)
-      return assessments.map((item) => this.extractAssessmentFields(item));
+      return assessments.map((item) => this.extractDocumentFields(item));
 
     if (lessons && !assessments)
-      return lessons.map((item) => this.extractLessonFields(item));
+      return lessons.map((item) => this.extractDocumentFields(item));
 
     throw new NotFoundException('There are no documents on the database');
   }
@@ -177,7 +137,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subject: {
           name: {
@@ -193,15 +153,15 @@ export class DocumentsService {
 
     if (lessons && assessments)
       return [
-        ...lessons.map((item) => this.extractLessonFields(item)),
-        ...assessments.map((item) => this.extractAssessmentFields(item)),
+        ...lessons.map((item) => this.extractDocumentFields(item)),
+        ...assessments.map((item) => this.extractDocumentFields(item)),
       ];
 
     if (!lessons && assessments)
-      return assessments.map((item) => this.extractAssessmentFields(item));
+      return assessments.map((item) => this.extractDocumentFields(item));
 
     if (lessons && !assessments)
-      return lessons.map((item) => this.extractLessonFields(item));
+      return lessons.map((item) => this.extractDocumentFields(item));
 
     throw new NotFoundException('There are no documents on the database');
   }
@@ -221,7 +181,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subjectId: latest.subjectId,
       },
@@ -232,15 +192,15 @@ export class DocumentsService {
     });
     if (lessons && assessments)
       return [
-        ...lessons.map((item) => this.extractLessonFields(item)),
-        ...assessments.map((item) => this.extractAssessmentFields(item)),
+        ...lessons.map((item) => this.extractDocumentFields(item)),
+        ...assessments.map((item) => this.extractDocumentFields(item)),
       ];
 
     if (!lessons && assessments)
-      return assessments.map((item) => this.extractAssessmentFields(item));
+      return assessments.map((item) => this.extractDocumentFields(item));
 
     if (lessons && !assessments)
-      return lessons.map((item) => this.extractLessonFields(item));
+      return lessons.map((item) => this.extractDocumentFields(item));
 
     throw new NotFoundException('There are no documents on the database');
   }

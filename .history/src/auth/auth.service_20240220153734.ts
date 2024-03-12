@@ -180,7 +180,7 @@ export class AuthService {
         },
       },
     });
-    if (!user) throw new NotFoundException('user was not found');
+    console.log(user);
     if (user.provider && user.providerUserId)
       throw new UnauthorizedException('wrong credentials ');
 
@@ -304,7 +304,7 @@ export class AuthService {
           email,
           uniqueId: Math.random(),
         },
-        { secret: 'at-secret', expiresIn: 60 * 20 },
+        { secret: 'at-secret', expiresIn: 60 },
       ),
       this.jwt.signAsync(
         {

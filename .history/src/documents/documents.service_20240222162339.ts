@@ -10,8 +10,6 @@ export class DocumentsService {
     id: true,
     title: true,
     url: true,
-    summary: true,
-    classType: true,
     subject: {
       select: {
         name: true,
@@ -61,8 +59,6 @@ export class DocumentsService {
     course_name: document.subject.course.name,
     school_acronime: document.subject.course.school.acronime,
     school_logo: document.subject.course.school.logo,
-    summary: document.summary,
-    classType: document.classType,
   });
   extractAssessmentFields = (document: documentsTypes) => ({
     id: document.id,
@@ -116,7 +112,7 @@ export class DocumentsService {
     });
 
     if (!lessons)
-      throw new NotFoundException('There are no lessons on the database');
+      throw new NotFoundException('There are no assessments on the database');
     return lessons.map((item) => this.extractLessonFields(item));
   }
 
@@ -177,7 +173,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subject: {
           name: {
@@ -221,7 +217,7 @@ export class DocumentsService {
       take: quantity,
     });
     const assessments = await this.prisma.assessment.findMany({
-      select: this.AssessmentSelect,
+      select: this.lessonSelect,
       where: {
         subjectId: latest.subjectId,
       },

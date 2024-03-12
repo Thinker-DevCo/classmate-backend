@@ -121,7 +121,7 @@ export class UserFavoriteDocumentsService {
           throw new ForbiddenException('assessment is already users favorite');
         }
       }
-
+      console.log(err);
       throw new ForbiddenException(
         'Could not add assessment to favorite table',
       );
