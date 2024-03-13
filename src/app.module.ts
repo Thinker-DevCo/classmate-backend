@@ -21,6 +21,7 @@ import { UserFavoriteSubjectModule } from './user-favorite-subject/user-favorite
 import { DocumentsModule } from './documents/documents.module';
 import { UserFavoriteDocumentsModule } from './user-favorite-documents/user-favorite-documents.module';
 import { SearchModule } from './search/search.module';
+import { ConnectionModule } from './connection/connection.module';
 
 import('adminjs').then((AdminJs) => {
   import('@adminjs/prisma').then((AdminJSPrisma) => {
@@ -117,6 +118,7 @@ import('adminjs').then((AdminJs) => {
     DocumentsModule,
     UserFavoriteDocumentsModule,
     SearchModule,
+    ConnectionModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],

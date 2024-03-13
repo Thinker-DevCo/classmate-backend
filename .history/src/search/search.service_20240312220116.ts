@@ -90,13 +90,7 @@ export class SearchService {
     const assessments = await this.findAssessments(query);
     const course = await this.findCourses(query);
     const schools = await this.findSchools(query);
-    if (query === '')
-      return {
-        documents: [],
-        subjects: [],
-        courses: [],
-        schools: [],
-      };
+    if (query === '') return [];
     return {
       documents: [
         ...lessons.map((lesson) => this.extractLessonFields(lesson)),
