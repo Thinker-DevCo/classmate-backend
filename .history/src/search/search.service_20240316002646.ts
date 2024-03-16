@@ -90,14 +90,13 @@ export class SearchService {
     const assessments = await this.findAssessments(query);
     const course = await this.findCourses(query);
     const schools = await this.findSchools(query);
-    const users = await this.getAllUsers(query);
+    const users - await this.getAllUsers(query)
     if (query === '')
       return {
         documents: [],
         subjects: [],
         courses: [],
         schools: [],
-        users: [],
       };
     return {
       documents: [
@@ -109,7 +108,6 @@ export class SearchService {
       subjects: [...subjects],
       courses: [...course],
       schools: [...schools],
-      users: [...users],
     };
 
     // const cursos = await t;
@@ -350,16 +348,13 @@ export class SearchService {
     return schools;
   }
   async getAllUsers(query: string) {
-    const users = this.prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        profile_image: true,
-        email: true,
-        connectionsReceived: true,
-        connectionsSent: true,
-      },
-    });
+    const users = this.prisma.user.findMany(
+      {
+        where: {
+          username: query,
+        }
+      }
+    );
     return users;
   }
 }

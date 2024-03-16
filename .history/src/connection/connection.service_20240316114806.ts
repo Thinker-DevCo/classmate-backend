@@ -106,7 +106,6 @@ export class ConnectionService {
   }
   async rejectConnection(sender_id: string, receiver_id: string) {
     try {
-      console.log('here');
       await this.prisma.connection.deleteMany({
         where: {
           OR: [

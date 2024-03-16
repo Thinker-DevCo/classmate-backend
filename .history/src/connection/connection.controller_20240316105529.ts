@@ -44,7 +44,7 @@ export class ConnectionController {
     return this.connectionService.acceptConnectionRequest(user_id, receiver_id);
   }
 
-  @Delete('removeconnection')
+  @Delete('')
   remove(
     @GetCurrentUserId() user_id: string,
     @Query('receiver') receiver_id: string,

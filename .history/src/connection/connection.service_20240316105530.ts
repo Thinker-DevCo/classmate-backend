@@ -106,23 +106,12 @@ export class ConnectionService {
   }
   async rejectConnection(sender_id: string, receiver_id: string) {
     try {
-      console.log('here');
-      await this.prisma.connection.deleteMany({
+      await this.prisma.connection.delete({
         where: {
-          OR: [
-            {
-              AND: {
-                sender_id: sender_id,
-                receiver_id: receiver_id,
-              },
-            },
-            {
-              AND: {
-                sender_id: receiver_id,
-                receiver_id: sender_id,
-              },
-            },
-          ],
+          sender_id_receiver_id: {
+            sender_id: sender_id,
+            receiver_id: receiver_id,
+          },
         },
       });
     } catch (err) {

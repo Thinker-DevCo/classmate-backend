@@ -23,12 +23,9 @@ export class ConnectionController {
   @Post('sendconnection')
   create(
     @GetCurrentUserId() sender_id: string,
-    @Body() connection: CreateConnectionDto,
+    @Query('id') receiver_id: string,
   ) {
-    return this.connectionService.sendConnnection(
-      sender_id,
-      connection.receiver_id,
-    );
+    return this.connectionService.sendConnnection(sender_id, receiver_id);
   }
 
   @Get('getUserConnections')
@@ -44,7 +41,7 @@ export class ConnectionController {
     return this.connectionService.acceptConnectionRequest(user_id, receiver_id);
   }
 
-  @Delete('removeconnection')
+  @Delete('')
   remove(
     @GetCurrentUserId() user_id: string,
     @Query('receiver') receiver_id: string,

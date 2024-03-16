@@ -8,5 +8,13 @@ enum Status {
 export class CreateConnectionDto {
   @IsString()
   @IsNotEmpty()
+  sender_id: string;
+
+  @IsString()
+  @IsNotEmpty()
   receiver_id: string;
+
+  @IsEnum(Status)
+  @IsNotEmpty()
+  status: Status;
 }

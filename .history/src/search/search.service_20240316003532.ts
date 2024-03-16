@@ -109,7 +109,6 @@ export class SearchService {
       subjects: [...subjects],
       courses: [...course],
       schools: [...schools],
-      users: [...users],
     };
 
     // const cursos = await t;
@@ -352,10 +351,6 @@ export class SearchService {
   async getAllUsers(query: string) {
     const users = this.prisma.user.findMany({
       select: {
-        id: true,
-        username: true,
-        profile_image: true,
-        email: true,
         connectionsReceived: true,
         connectionsSent: true,
       },
