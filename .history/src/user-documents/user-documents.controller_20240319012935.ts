@@ -49,7 +49,7 @@ export class UserDocumentsController {
 
   @Get('getUserDocuments')
   findAll(@GetCurrentUserId() userId: string) {
-    return this.userDocumentsService.findAll(userId);
+    return this.userDocumentsService.findAll();
   }
 
   @Get(':id')

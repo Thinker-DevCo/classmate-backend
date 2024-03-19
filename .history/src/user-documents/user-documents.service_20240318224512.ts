@@ -32,7 +32,7 @@ export class UserDocumentsService {
       const userDocument = await this.prisma.userDocument.create({
         data: {
           title: `${dto.title}`,
-          url: `https://classmate-userdocuments-mz.s3.af-south-1.amazonaws.com/${dto.title.replace(
+          url: `https://classmate-mz.s3.af-south-1.amazonaws.com/${dto.title.replace(
             / /g,
             '+',
           )}.pdf`,
@@ -56,12 +56,8 @@ export class UserDocumentsService {
     }
   }
 
-  async findAll(userId: string) {
-    const documents = await this.prisma.userDocument.findMany({
-      where: {
-        userId: userId,
-      },
-    });
+  async findAll() {
+    const documents = await this.prisma.userDocument.findMany();
     if (!documents)
       throw new NotFoundException('Could not find any assessment');
 

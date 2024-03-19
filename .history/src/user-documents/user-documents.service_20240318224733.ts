@@ -56,12 +56,8 @@ export class UserDocumentsService {
     }
   }
 
-  async findAll(userId: string) {
-    const documents = await this.prisma.userDocument.findMany({
-      where: {
-        userId: userId,
-      },
-    });
+  async findAll() {
+    const documents = await this.prisma.userDocument.findMany();
     if (!documents)
       throw new NotFoundException('Could not find any assessment');
 

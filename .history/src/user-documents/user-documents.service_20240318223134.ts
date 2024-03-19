@@ -28,21 +28,22 @@ export class UserDocumentsService {
   });
   async create(dto: CreateUserDocumentDto, file: Buffer, userId: string) {
     try {
-      await this.upload(`${dto.title}.pdf`, file);
-      const userDocument = await this.prisma.userDocument.create({
-        data: {
-          title: `${dto.title}`,
-          url: `https://classmate-userdocuments-mz.s3.af-south-1.amazonaws.com/${dto.title.replace(
-            / /g,
-            '+',
-          )}.pdf`,
-          subjectId: dto.subjectId,
-          correctionUrl: dto.correctionUrl,
-          type: dto.type,
-          userId: userId,
-        },
+      await this.upload(`${dto.title}.pdf`, file).then(async () => {
+        const userDocument = await this.prisma.userDocument.create({
+          data: {
+            title: `${dto.title}`,
+            url: `https://classmate-mz.s3.af-south-1.amazonaws.com/${dto.title.replace(
+              / /g,
+              '+',
+            )}.pdf`,
+            subjectId: dto.subjectId,
+            correctionUrl: dto.correctionUrl,
+            type: dto.type,
+            userId: userId,
+          },
+        });
+        return userDocument;
       });
-      return userDocument;
     } catch (err) {
       if (err.code instanceof Prisma.PrismaClientInitializationError) {
         if (err.code === 'P2002') {
@@ -56,12 +57,8 @@ export class UserDocumentsService {
     }
   }
 
-  async findAll(userId: string) {
-    const documents = await this.prisma.userDocument.findMany({
-      where: {
-        userId: userId,
-      },
-    });
+  async findAll() {
+    const documents = await this.prisma.userDocument.findMany();
     if (!documents)
       throw new NotFoundException('Could not find any assessment');
 
