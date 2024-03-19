@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSearchDto } from './dto/create-search.dto';
 import { UpdateSearchDto } from './dto/update-search.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -90,15 +90,7 @@ export class SearchService {
     const assessments = await this.findAssessments(query);
     const course = await this.findCourses(query);
     const schools = await this.findSchools(query);
-    const users = await this.getAllUsers(query);
-    if (query === '')
-      return {
-        documents: [],
-        subjects: [],
-        courses: [],
-        schools: [],
-        users: [],
-      };
+    if (query === '') return [];
     return {
       documents: [
         ...lessons.map((lesson) => this.extractLessonFields(lesson)),
@@ -109,7 +101,6 @@ export class SearchService {
       subjects: [...subjects],
       courses: [...course],
       schools: [...schools],
-      users: [...users],
     };
 
     // const cursos = await t;
@@ -348,18 +339,5 @@ export class SearchService {
       },
     });
     return schools;
-  }
-  async getAllUsers(query: string) {
-    const users = this.prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        profile_image: true,
-        email: true,
-        connectionsReceived: true,
-        connectionsSent: true,
-      },
-    });
-    return users;
   }
 }

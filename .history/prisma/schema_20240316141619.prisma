@@ -32,7 +32,6 @@ model User {
   favoriteAssessmen UserFavoriteAssessment[]
   connectionsSent   Connection[] @relation("SentConnections")
   connectionsReceived   Connection[] @relation("ReceivedConnections")
-  userDocuments UserDocument[]
 
 }
 
@@ -89,7 +88,7 @@ model Subject{
   lessons Lesson[]
   assessments Assessment[] 
   favoriteSubjects  UserFavoriteSubject[]
-  userDocuments UserDocument []
+  userDocuments UserDocuments []
   @@unique([id, courseId])
 }
 
@@ -133,13 +132,11 @@ model UserFavoriteSubject {
   @@id([userId, subjectId])
 }
 
-model UserDocument {
+model UserDocuments {
   id String @id @default(uuid())
   url String @unique
   title String 
   type UserDType
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: NoAction )
   correctionUrl String?
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?

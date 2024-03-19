@@ -109,7 +109,6 @@ export class SearchService {
       subjects: [...subjects],
       courses: [...course],
       schools: [...schools],
-      users: [...users],
     };
 
     // const cursos = await t;

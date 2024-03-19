@@ -32,7 +32,6 @@ model User {
   favoriteAssessmen UserFavoriteAssessment[]
   connectionsSent   Connection[] @relation("SentConnections")
   connectionsReceived   Connection[] @relation("ReceivedConnections")
-  userDocuments UserDocument[]
 
 }
 
@@ -89,7 +88,6 @@ model Subject{
   lessons Lesson[]
   assessments Assessment[] 
   favoriteSubjects  UserFavoriteSubject[]
-  userDocuments UserDocument []
   @@unique([id, courseId])
 }
 
@@ -131,20 +129,6 @@ model UserFavoriteSubject {
   subjectId String
   createdAt DateTime @default(now())
   @@id([userId, subjectId])
-}
-
-model UserDocument {
-  id String @id @default(uuid())
-  url String @unique
-  title String 
-  type UserDType
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: NoAction )
-  correctionUrl String?
-  subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
-  subjectId String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model UserFavoriteLesson {
@@ -189,14 +173,6 @@ enum AssessmentPeriod {
 enum LessonType {
   EXERCISE
   APPOINTAMENTS
-}
-
-enum UserDType {
-  APPOINTAMENTS
-  TESTS
-  EXERCISES
-  EXAM
-
 }
 
 enum Status {

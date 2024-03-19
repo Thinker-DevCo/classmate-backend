@@ -139,7 +139,7 @@ model UserDocument {
   title String 
   type UserDType
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: NoAction )
+  user User @relation(fields: [userId], references: [id], onDelete: SetNull )
   correctionUrl String?
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?

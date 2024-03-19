@@ -22,7 +22,6 @@ import { DocumentsModule } from './documents/documents.module';
 import { UserFavoriteDocumentsModule } from './user-favorite-documents/user-favorite-documents.module';
 import { SearchModule } from './search/search.module';
 import { ConnectionModule } from './connection/connection.module';
-import { UserDocumentsModule } from './user-documents/user-documents.module';
 
 import('adminjs').then((AdminJs) => {
   import('@adminjs/prisma').then((AdminJSPrisma) => {
@@ -35,6 +34,7 @@ import('adminjs').then((AdminJs) => {
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     PrismaModule,
     AuthModule,
@@ -127,8 +127,6 @@ import('adminjs').then((AdminJs) => {
     UserFavoriteDocumentsModule,
     SearchModule,
     ConnectionModule,
-    UserDocumentsModule,
-    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],
