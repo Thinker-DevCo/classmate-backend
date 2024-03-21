@@ -33,7 +33,6 @@ model User {
   connectionsSent   Connection[] @relation("SentConnections")
   connectionsReceived   Connection[] @relation("ReceivedConnections")
   userDocuments UserDocument[]
-  lists Lists[]
 
 }
 
@@ -103,7 +102,7 @@ model Lesson{
   classType LessonType
   subjectId String?
   correctionUrl String?
-  lists ListHasLesson[]
+  lists DocumentOnList[]
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull) 
   favoriteLessons UserFavoriteLesson[]
   createdAt DateTime @default(now())
@@ -121,7 +120,7 @@ model Assessment{
   correctionUrl String?
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?
-  lists ListHasAssessment[]
+  lists DocumentOnList[]
   favoriteAssessment UserFavoriteAssessment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,7 +141,7 @@ model UserDocument {
   title String 
   type UserDType
   userId String
-  lists ListHasUserDocuments[]
+  lists DocumentOnList[]
   user User @relation(fields: [userId], references: [id], onDelete: NoAction )
   correctionUrl String?
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
@@ -179,40 +178,25 @@ model Connection {
 
 model Lists {
   id String @id @default(uuid())
-  name String @unique
-  user_id String 
-  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  listHasAssessment ListHasAssessment[]
-  listHasLesson ListHasLesson[]
-  listHasUserDocuments ListHasUserDocuments[]
+  title String
+  Document DocumentOnList[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model ListHasAssessment {
+model DocumentOnList {
+  id String @id @default(uuid())
   list_id String
   list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
-  assessment_id String
-  assessment Assessment @relation(fields: [assessment_id], references: [id], onDelete: NoAction)
-  @@id([list_id, assessment_id])
-}
-model ListHasLesson {
-  list_id String
-  list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
-  lesson_id String
+  assessment_id String? 
+  assessment Assessment? @relation(fields: [assessment_id], references: [id], onDelete: NoAction)
+  lesson_id String?
   lesson Lesson? @relation(fields: [lesson_id], references: [id], onDelete: NoAction)
-  @@id([list_id, lesson_id])
+  userDocument_id String?
+  userDocument UserDocument? @relation(fields: [userDocument_id], references: [id], onDelete: NoAction)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
-model ListHasUserDocuments {
-  list_id String
-  list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
-  userDocument_id String
-  userDocument UserDocument @relation(fields: [userDocument_id], references: [id], onDelete: NoAction)
-  @@id([list_id, userDocument_id])
-}
-
-
 
 enum AssessmentType {
   MINI_TEST
