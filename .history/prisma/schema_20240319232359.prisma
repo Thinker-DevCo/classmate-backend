@@ -33,7 +33,6 @@ model User {
   connectionsSent   Connection[] @relation("SentConnections")
   connectionsReceived   Connection[] @relation("ReceivedConnections")
   userDocuments UserDocument[]
-  lists Lists[]
 
 }
 
@@ -179,9 +178,7 @@ model Connection {
 
 model Lists {
   id String @id @default(uuid())
-  name String @unique
-  user_id String 
-  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  name String
   listHasAssessment ListHasAssessment[]
   listHasLesson ListHasLesson[]
   listHasUserDocuments ListHasUserDocuments[]

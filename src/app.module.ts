@@ -23,6 +23,7 @@ import { UserFavoriteDocumentsModule } from './user-favorite-documents/user-favo
 import { SearchModule } from './search/search.module';
 import { ConnectionModule } from './connection/connection.module';
 import { UserDocumentsModule } from './user-documents/user-documents.module';
+import { ListModule } from './list/list.module';
 
 import('adminjs').then((AdminJs) => {
   import('@adminjs/prisma').then((AdminJSPrisma) => {
@@ -129,6 +130,7 @@ import('adminjs').then((AdminJs) => {
     ConnectionModule,
     UserDocumentsModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    ListModule,
   ],
   controllers: [AppController],
   providers: [AppService, CourseService, SubjectService],
