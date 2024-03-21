@@ -31,11 +31,11 @@ export class ListService {
       }
     }
   }
-  async listAssessment(list_id: string, assessment_id: string) {
+  async listAssessment(list_id: string, assessment_Id: string) {
     try {
       const list = await this.prisma.listHasAssessment.create({
         data: {
-          assessment_id: assessment_id,
+          assessment_id: assessment_Id,
           list_id: list_id,
         },
       });
@@ -260,7 +260,7 @@ export class ListService {
           AND: [
             {
               list_id: list_id,
-              lesson_id: lesson_id,
+              lesson_id: list_id,
             },
             {
               list: {

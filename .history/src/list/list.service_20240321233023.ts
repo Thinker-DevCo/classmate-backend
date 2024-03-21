@@ -32,6 +32,7 @@ export class ListService {
     }
   }
   async listAssessment(list_id: string, assessment_id: string) {
+    console.log(assessment_id);
     try {
       const list = await this.prisma.listHasAssessment.create({
         data: {

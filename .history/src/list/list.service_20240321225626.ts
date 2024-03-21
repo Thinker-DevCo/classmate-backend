@@ -31,11 +31,11 @@ export class ListService {
       }
     }
   }
-  async listAssessment(list_id: string, assessment_id: string) {
+  async listAssessment(list_id: string, assessment_Id: string) {
     try {
       const list = await this.prisma.listHasAssessment.create({
         data: {
-          assessment_id: assessment_id,
+          assessment_id: assessment_Id,
           list_id: list_id,
         },
       });
@@ -221,6 +221,7 @@ export class ListService {
     assessment_id: string,
     user_id: string,
   ) {
+    console.log('here');
     try {
       await this.prisma.listHasAssessment.deleteMany({
         where: {
@@ -253,14 +254,13 @@ export class ListService {
     lesson_id: string,
     user_id: string,
   ) {
-    console.log('here');
     try {
       await this.prisma.listHasLesson.deleteMany({
         where: {
           AND: [
             {
               list_id: list_id,
-              lesson_id: lesson_id,
+              lesson_id: list_id,
             },
             {
               list: {
@@ -276,6 +276,9 @@ export class ListService {
       return message;
     } catch (err) {
       console.log(err);
+      throw new BadRequestException(
+        'could not delete the assessment information',
+      );
     }
   }
   async removeUserDocumentOnList(
