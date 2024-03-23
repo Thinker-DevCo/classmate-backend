@@ -20,6 +20,7 @@ model User {
   providerUserId String?
   hash_password String?
   profile_image String?
+  header_image String?
   verified_email Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,6 +30,11 @@ model User {
   favoriteSubjects  UserFavoriteSubject[]
   favoriteLessons UserFavoriteLesson[]
   favoriteAssessmen UserFavoriteAssessment[]
+  connectionsSent   Connection[] @relation("SentConnections")
+  connectionsReceived   Connection[] @relation("ReceivedConnections")
+  userDocuments UserDocument[]
+  lists Lists[]
+
 }
 
 model PersonalInfo {
@@ -84,6 +90,7 @@ model Subject{
   lessons Lesson[]
   assessments Assessment[] 
   favoriteSubjects  UserFavoriteSubject[]
+  userDocuments UserDocument []
   @@unique([id, courseId])
 }
 
@@ -96,6 +103,7 @@ model Lesson{
   classType LessonType
   subjectId String?
   correctionUrl String?
+  lists ListHasLesson[]
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull) 
   favoriteLessons UserFavoriteLesson[]
   createdAt DateTime @default(now())
@@ -113,6 +121,7 @@ model Assessment{
   correctionUrl String?
   subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
   subjectId String?
+  lists ListHasAssessment[]
   favoriteAssessment UserFavoriteAssessment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,6 +136,22 @@ model UserFavoriteSubject {
   @@id([userId, subjectId])
 }
 
+model UserDocument {
+  id String @id @default(uuid())
+  url String @unique
+  title String 
+  type UserDType
+  userId String
+  Active Boolean @default(false)
+  lists ListHasUserDocuments[]
+  user User @relation(fields: [userId], references: [id], onDelete: NoAction )
+  correctionUrl String?
+  subject Subject? @relation(fields: [subjectId], references: [id], onDelete:SetNull)
+  subjectId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model UserFavoriteLesson {
   user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String
@@ -136,12 +161,62 @@ model UserFavoriteLesson {
   @@id([user_id, lesson_id])
 }
 model UserFavoriteAssessment {
-  user      User    @relation(fields: [user_Id], references: [id], onDelete: Cascade)
-  user_Id    String
-  Assessment  Assessment @relation(fields: [Assessment_id], references: [id], onDelete: Cascade)
-  Assessment_id String
+  user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    String
+  Assessment  Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+  assessment_id String
   createdAt DateTime @default(now())
-  @@id([user_Id, Assessment_id])
+  @@id([user_id, assessment_id])
+}
+
+model Connection {
+  sender      User @relation("SentConnections", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver    User @relation("ReceivedConnections", fields: [receiver_id], references:[id], onDelete: Cascade)
+  sender_id String
+  receiver_id String
+  status Status 
+  @@id([sender_id, receiver_id])
+}
+
+model Lists {
+  id String @id @default(uuid())
+  name String @unique
+  user_id String 
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  listHasAssessment ListHasAssessment[]
+  listHasLesson ListHasLesson[]
+  access AccessType @default(PRIVATE)
+  listHasUserDocuments ListHasUserDocuments[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ListHasAssessment {
+  list_id String
+  list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
+  assessment_id String
+  assessment Assessment @relation(fields: [assessment_id], references: [id], onDelete: NoAction)
+  @@id([list_id, assessment_id])
+}
+model ListHasLesson {
+  list_id String
+  list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
+  lesson_id String
+  lesson Lesson? @relation(fields: [lesson_id], references: [id], onDelete: NoAction)
+  @@id([list_id, lesson_id])
+}
+
+model ListHasUserDocuments {
+  list_id String
+  list Lists @relation(fields: [list_id], references: [id], onDelete: Cascade)
+  userDocument_id String
+  userDocument UserDocument @relation(fields: [userDocument_id], references: [id], onDelete: NoAction)
+  @@id([list_id, userDocument_id])
+}
+
+enum AccessType {
+  PUBLIC
+  PRIVATE
 }
 
 
@@ -163,6 +238,18 @@ enum LessonType {
   APPOINTAMENTS
 }
 
+enum UserDType {
+  APPOINTAMENTS
+  TESTS
+  EXERCISES
+  EXAM
+
+}
+
+enum Status {
+  ACCEPTED
+  PENDING
+}
 
 
 

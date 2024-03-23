@@ -1,6 +1,6 @@
 import { IsEnum, IsString } from 'class-validator';
 
-enum AccessType {
+enum AssessmentPeriod {
   PUBLIC = 'PUBLIC',
   PRIVATE = 'PRIVATE',
 }
@@ -8,4 +8,7 @@ enum AccessType {
 export class CreateListDto {
   @IsString()
   name: string;
+
+  @IsEnum()
+  access;
 }
