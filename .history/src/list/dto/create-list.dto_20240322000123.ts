@@ -8,4 +8,7 @@ enum AccessType {
 export class CreateListDto {
   @IsString()
   name: string;
+
+  @IsEnum(AccessType)
+  access: AccessType;
 }

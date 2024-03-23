@@ -142,6 +142,7 @@ model UserDocument {
   title String 
   type UserDType
   userId String
+  Active Boolean @default(false)
   lists ListHasUserDocuments[]
   user User @relation(fields: [userId], references: [id], onDelete: NoAction )
   correctionUrl String?
@@ -184,6 +185,7 @@ model Lists {
   User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   listHasAssessment ListHasAssessment[]
   listHasLesson ListHasLesson[]
+  access AccessType @default(PRIVATE)
   listHasUserDocuments ListHasUserDocuments[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -212,6 +214,10 @@ model ListHasUserDocuments {
   @@id([list_id, userDocument_id])
 }
 
+enum AccessType {
+  PUBLIC
+  PRIVATE
+}
 
 
 enum AssessmentType {
@@ -244,6 +250,7 @@ enum Status {
   ACCEPTED
   PENDING
 }
+
 
 
 
